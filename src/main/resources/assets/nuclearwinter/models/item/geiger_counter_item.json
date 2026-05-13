@@ -1,0 +1,4 @@
+{
+	"loader": "forge:obj",
+	"model": "nuclearwinter:models/item/geiger_counter.obj"
+}
