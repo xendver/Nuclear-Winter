@@ -6,87 +6,89 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-// @OnlyIn(Dist.CLIENT) — класс загружается только на клиенте
 @OnlyIn(Dist.CLIENT)
 public class ItemGeigerRenderer {
 
     @SubscribeEvent
     public void onRenderHand(RenderHandEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
 
-        ItemStack stack = event.getItemStack();
+        if (player == null)
+            return;
+
+        InteractionHand hand = event.getHand();
+        ItemStack stack = player.getItemInHand(hand);
 
         if (stack.isEmpty() || stack.getItem() != ModItems.GEIGER_COUNTER.get())
             return;
 
-        boolean isRightHand = event.getHand() == InteractionHand.MAIN_HAND;
+        PoseStack poseStack = event.getPoseStack();
+        MultiBufferSource buffer = event.getMultiBufferSource();
 
-        Minecraft mc = Minecraft.getInstance();
+        boolean rightHand = (hand == InteractionHand.MAIN_HAND)
+                ? player.getMainArm() == HumanoidArm.RIGHT
+                : player.getMainArm() == HumanoidArm.LEFT;
 
-        PoseStack pose = event.getPoseStack();
+        float radiation = PacketChunkRadiation.ClientRadiationData.radiationLevel;
+        String text = String.format("%.1f RAD", radiation);
+        Font font = mc.font;
 
-        // == РЕНДЕР МОДЕЛИ ИТЕМА =============================================
-        mc.getItemRenderer().renderStatic(
-                stack,
-                net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
-                event.getPackedLight(),
-                net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY,
-                pose,
-                event.getMultiBufferSource(),
-                mc.level,
-                0
-        );
+        poseStack.pushPose();
 
-        // == ТЕКСТ ============================================================
-        float level = PacketChunkRadiation.ClientRadiationData.radiationLevel;
-        String text = String.format("%.1f rad", level);
+        float x = 0.380F;
+        float y = 0.05F;
+        float z = -0.600F;
 
-        pose.pushPose();
-
-        // Позиция текста
-        if (isRightHand) {
-            pose.translate(0.22, 0, -0.45);
+        if (rightHand) {
+            poseStack.translate(x + 0.245D, y - 0.135D, z - 0.515D);
         } else {
-            pose.translate(-0.22, 0, -0.45);
+            poseStack.translate(x - 0.999D, y - 0.135D, z - 0.515D);
         }
 
-        // Поворот
-        pose.mulPose(Axis.YP.rotationDegrees(180f));
+        // Rotate
+        poseStack.mulPose(Axis.XP.rotationDegrees(-10.0f));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(0f));
 
-        // Масштаб
-        float scale = 0.01f;
-        pose.scale(-scale, -scale, scale);
+        // Scale
+        float scale = 0.0065f;
+        poseStack.scale(-scale, -scale, scale);
 
-        // Цвет текста по уровню радиации
+        // Color
         int color;
-        if      (level > 400f) color = 0xFF0000; // красный
-        else if (level > 100f) color = 0xFFAA00; // оранжевый
-        else                   color = 0x00FF00; // зелёный
+        if (radiation > 400f)
+            color = 0xFF4444;  // Красный
+        else if (radiation > 100f)
+            color = 0xFFAA00;  // Оранжевый
+        else
+            color = 0x44FF44;  // Зелёный
 
-        Font font = mc.font;
-        int textWidth = font.width(text);
+        int width = font.width(text);
 
         font.drawInBatch(
                 text,
-                -textWidth / 2f,
-                0f,
+                -width / 2f,
+                0,
                 color,
                 false,
-                pose.last().pose(),
-                event.getMultiBufferSource(),
+                poseStack.last().pose(),
+                buffer,
                 Font.DisplayMode.NORMAL,
-                0x000000,
+                0,
                 event.getPackedLight()
         );
 
-        pose.popPose();
-
-        event.setCanceled(true);
+        poseStack.popPose();
     }
 }
