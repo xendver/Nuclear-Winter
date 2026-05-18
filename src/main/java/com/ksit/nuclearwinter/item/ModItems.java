@@ -16,5 +16,5 @@ public class ModItems {
 
     //Счётчик Гейгера
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER =
-            ITEMS.register("geiger_counter_item", ItemGeigerCounter::new);
+            ITEMS.register("geiger_counter", ItemGeigerCounter::new);
 }

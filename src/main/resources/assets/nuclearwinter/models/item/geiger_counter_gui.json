@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/handheld",
+	"textures": {
+		"layer0": "nuclearwinter:item/geiger_counter_gui"
+	}
+}
