@@ -1,7 +1,11 @@
 package com.ksit.nuclearwinter.item;
 
 import com.ksit.nuclearwinter.NuclearWinter;
+import com.ksit.nuclearwinter.item.armor.RagOZKArmorItem;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -9,8 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModItems {
 
 
-    public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(ForgeRegistries.ITEMS, NuclearWinter.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, NuclearWinter.MODID);
     public static final RegistryObject<Item> RAW_URANIUM =
             ITEMS.register(
                     "raw_uranium",
@@ -30,9 +33,39 @@ public class ModItems {
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER =
             ITEMS.register("geiger_counter", ItemGeigerCounter::new);
 
-    public static final RegistryObject<Item> SADFASDF_HELMET = ITEMS.register("sadfasdf_helmet", () -> new SadfasdfItem.Helmet());
-    public static final RegistryObject<Item> SADFASDF_CHESTPLATE = ITEMS.register("sadfasdf_chestplate", () -> new SadfasdfItem.Chestplate());
-    public static final RegistryObject<Item> SADFASDF_LEGGINGS = ITEMS.register("sadfasdf_leggings", () -> new SadfasdfItem.Leggings());
-    public static final RegistryObject<Item> SADFASDF_BOOTS = ITEMS.register("sadfasdf_boots", () -> new SadfasdfItem.Boots());
+    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_HELMET =
+            ITEMS.register("rag_ozk_helmet",
+                    () -> new RagOZKArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.HELMET,
+                            new Item.Properties()
+                    ));
 
+    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_CHESTPLATE =
+            ITEMS.register("rag_ozk_chestplate",
+                    () -> new RagOZKArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.CHESTPLATE,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_LEGGINGS =
+            ITEMS.register("rag_ozk_leggings",
+                    () -> new RagOZKArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.LEGGINGS,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_BOOTS =
+            ITEMS.register("rag_ozk_boots",
+                    () -> new RagOZKArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.BOOTS,
+                            new Item.Properties()
+                    ));
+
+    public static void register(IEventBus bus) {
+        ITEMS.register(bus);
+    }
 }

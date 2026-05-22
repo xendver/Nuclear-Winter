@@ -1,3 +1,12 @@
 {
-  "item.nuclearwinter.geiger_counter": "Geiger Counter"
+  "item.nuclearwinter.geiger_counter": "Geiger Counter",
+  "item.nuclearwinter.rag_ozk_helmet": "§6Ragged Protection Helmet",
+  "item.nuclearwinter.rag_ozk_chestplate": "§6Ragged Protection chestplate",
+  "item.nuclearwinter.rag_ozk_leggings": "§6Ragged Protection leggings",
+  "item.nuclearwinter.rag_ozk_boots": "§6Ragged Protection boots",
+  "block.nuclearwinter.uranium_ore": "Uranium Ore",
+  "block.nuclearwinter.deepslate_uranium_ore": "Deepslate Uranium Ore",
+  "block.nuclearwinter.raw_uranium_block": "Raw Uranium Block",
+  "item.nuclearwinter.raw_uranium": "Raw Uranium",
+  "item.nuclearwinter.yellow_cake": "Yellow Cake"
 }

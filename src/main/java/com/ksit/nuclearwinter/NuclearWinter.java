@@ -14,12 +14,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import com.ksit.nuclearwinter.block.ModBlocks;
 import com.ksit.nuclearwinter.item.ModCreativeTabs;
+import software.bernie.geckolib.GeckoLib;
 
 @Mod(NuclearWinter.MODID)
 public class NuclearWinter {
 
     public static final String MODID = "nuclearwinter";
-
 
     public NuclearWinter() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -27,7 +27,7 @@ public class NuclearWinter {
         ModBlocks.BLOCKS.register(modBus);
         ModCreativeTabs.TABS.register(modBus);
         ModBlocks.registerBlockItems();
-
+        GeckoLib.initialize();
         modBus.addListener(RadiationCapability::register);
         modBus.addListener(this::commonSetup);
 
