@@ -33,7 +33,7 @@ public class WorldRadiationHandler {
             this.radiation = radiation;
         }
     }
-    
+
     private final Map<ChunkPos, List<ActiveSource>> spatialSources = new HashMap<>();
     public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player){
         ServerLevel level = (ServerLevel) player.level();
@@ -148,12 +148,26 @@ public class WorldRadiationHandler {
         for (ActiveSource s : sources) {
 
             ChunkPos pos = new ChunkPos(s.chunkX, s.chunkZ);
+            List<ActiveSource> list = spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
 
-            spatialSources
-                    .computeIfAbsent(pos, k -> new ArrayList<>())
-                    .add(s);
+            if(list.isEmpty()){
+                list.add(s);
+                continue;
+            }
+            float newRadius = s.radiation.getRadius();
+            float firstRadius = list.get(0).radiation.getRadius();
+
+            if (newRadius > firstRadius){
+                list.add(0,s);
+            }
+            else{
+                list.add(s);
+            }
+
         }
     }
+
+
 
     private void collectPlayerItemSources(Player player,
                                           List<ActiveSource> sources) {

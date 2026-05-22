@@ -67,10 +67,11 @@ public class ItemGeigerRenderer {
 
         // Color
         int color;
-        if (radiation > 400f)
-            color = 0xFF4444;  // Красный
-        else if (radiation > 100f)
-            color = 0xFFAA00;  // Оранжевый
+        if      (radiation >= 1500.0f) color = 0xFF0000; // красный
+        else if (radiation >= 120.0f)  color = 0xFF2200; // тёмно-красный
+        else if (radiation >= 6.0f)    color = 0xFF6600; // оранжевый
+        else if (radiation >= 0.8f)    color = 0xFFAA00; // жёлтый
+        else if (radiation >= 0.2f)    color = 0xFFFF00; // светло-жёлтый
         else
             color = 0x44FF44;  // Зелёный
 

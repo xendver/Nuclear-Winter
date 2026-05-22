@@ -12,16 +12,22 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import com.ksit.nuclearwinter.block.ModBlocks;
+import com.ksit.nuclearwinter.item.ModCreativeTabs;
 
 @Mod(NuclearWinter.MODID)
 public class NuclearWinter {
 
     public static final String MODID = "nuclearwinter";
 
+
     public NuclearWinter() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-
         ModItems.ITEMS.register(modBus);
+        ModBlocks.BLOCKS.register(modBus);
+        ModCreativeTabs.TABS.register(modBus);
+        ModBlocks.registerBlockItems();
+
         modBus.addListener(RadiationCapability::register);
         modBus.addListener(this::commonSetup);
 
@@ -29,6 +35,7 @@ public class NuclearWinter {
         MinecraftForge.EVENT_BUS.register(new WorldRadiationHandler());
         MinecraftForge.EVENT_BUS.register(new EntityEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommandRadiationInfo());
+
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
