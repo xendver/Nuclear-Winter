@@ -29,10 +29,10 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.RAW_URANIUM.get());
                                 output.accept(ModItems.YELLOW_CAKE.get());
                                 output.accept(ModItems.GEIGER_COUNTER.get());
-                                output.accept(ModItems.RAG_OZK_HELMET.get());
-                                output.accept(ModItems.RAG_OZK_CHESTPLATE.get());
-                                output.accept(ModItems.RAG_OZK_LEGGINGS.get());
-                                output.accept(ModItems.RAG_OZK_BOOTS.get());
+                                output.accept(ModItems.RAGGED_ARMOR_HELMET.get());
+                                output.accept(ModItems.RAGGED_ARMOR_CHESTPLATE.get());
+                                output.accept(ModItems.RAGGED_ARMOR_LEGGINGS.get());
+                                output.accept(ModItems.RAGGED_ARMOR_BOOTS.get());
 
                                 output.accept(ModBlocks.URANIUM_ORE.get());
                                 output.accept(ModBlocks.DEEPSLATE_URANIUM_ORE.get());

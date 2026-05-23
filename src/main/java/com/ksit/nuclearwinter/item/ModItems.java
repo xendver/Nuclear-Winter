@@ -1,7 +1,7 @@
 package com.ksit.nuclearwinter.item;
 
 import com.ksit.nuclearwinter.NuclearWinter;
-import com.ksit.nuclearwinter.item.armor.RagOZKArmorItem;
+import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
@@ -33,33 +33,33 @@ public class ModItems {
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER =
             ITEMS.register("geiger_counter", ItemGeigerCounter::new);
 
-    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_HELMET =
-            ITEMS.register("rag_ozk_helmet",
-                    () -> new RagOZKArmorItem(
+    public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_HELMET =
+            ITEMS.register("ragged_armor_helmet",
+                    () -> new RaggedArmorItem(
                             ArmorMaterials.DIAMOND,
                             ArmorItem.Type.HELMET,
                             new Item.Properties()
                     ));
 
-    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_CHESTPLATE =
-            ITEMS.register("rag_ozk_chestplate",
-                    () -> new RagOZKArmorItem(
+    public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_CHESTPLATE =
+            ITEMS.register("ragged_armor_chestplate",
+                    () -> new RaggedArmorItem(
                             ArmorMaterials.DIAMOND,
                             ArmorItem.Type.CHESTPLATE,
                             new Item.Properties()
                     ));
 
-    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_LEGGINGS =
-            ITEMS.register("rag_ozk_leggings",
-                    () -> new RagOZKArmorItem(
+    public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_LEGGINGS =
+            ITEMS.register("ragged_armor_leggings",
+                    () -> new RaggedArmorItem(
                             ArmorMaterials.DIAMOND,
                             ArmorItem.Type.LEGGINGS,
                             new Item.Properties()
                     ));
 
-    public static final RegistryObject<RagOZKArmorItem> RAG_OZK_BOOTS =
-            ITEMS.register("rag_ozk_boots",
-                    () -> new RagOZKArmorItem(
+    public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_BOOTS =
+            ITEMS.register("ragged_armor_boots",
+                    () -> new RaggedArmorItem(
                             ArmorMaterials.DIAMOND,
                             ArmorItem.Type.BOOTS,
                             new Item.Properties()

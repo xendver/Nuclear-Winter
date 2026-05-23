@@ -14,18 +14,18 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import com.ksit.nuclearwinter.client.renderer.armor.RagOZKArmorRenderer;
+import com.ksit.nuclearwinter.client.renderer.armor.RaggedArmorRenderer;
 
 import java.util.function.Consumer;
 
-public class RagOZKArmorItem extends ArmorItem implements GeoItem {
+public class RaggedArmorItem extends ArmorItem implements GeoItem {
 
     private final AnimatableInstanceCache cache =
             GeckoLibUtil.createInstanceCache(this);
 
-    public RagOZKArmorItem(ArmorMaterial material,
-                       Type type,
-                       Properties properties) {
+    public RaggedArmorItem(ArmorMaterial material,
+                           Type type,
+                           Properties properties) {
 
         super(material, type, properties);
     }
@@ -46,7 +46,7 @@ public class RagOZKArmorItem extends ArmorItem implements GeoItem {
             ) {
 
                 if (this.renderer == null) {
-                    this.renderer = new RagOZKArmorRenderer();
+                    this.renderer = new RaggedArmorRenderer();
                 }
 
                 this.renderer.prepForRender(
