@@ -21,9 +21,21 @@ public final class ModBlocks {
                     NuclearWinter.MODID
             );
 
+    // Руды
     public static final RegistryObject<Block> URANIUM_ORE =
             BLOCKS.register(
                     "uranium_ore",
+                    () -> new DropExperienceBlock(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.STONE)
+                                    .strength(7f, 9f)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
+    public static final RegistryObject<Block> LEAD_ORE =
+            BLOCKS.register(
+                    "lead_ore",
                     () -> new DropExperienceBlock(
                             BlockBehaviour.Properties.of()
                                     .mapColor(MapColor.STONE)
@@ -43,6 +55,7 @@ public final class ModBlocks {
                     )
             );
 
+    // Крафтовые блоки
     public static final RegistryObject<Block> RAW_URANIUM_BLOCK =
             BLOCKS.register(
                     "raw_uranium_block",
@@ -55,28 +68,57 @@ public final class ModBlocks {
                     )
             );
 
+    public static final RegistryObject<Block> LEAD_BLOCK =
+            BLOCKS.register(
+                    "lead_block",
+                    () -> new Block(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.COLOR_GREEN)
+                                    .strength(10f, 14f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
     public static void registerBlockItems() {
 
+        // Руды
         ModItems.ITEMS.register(
-                "uranium_ore.json",
+                "uranium_ore",
                 () -> new BlockItem(
                         URANIUM_ORE.get(),
                         new Item.Properties()
                 )
         );
+        ModItems.ITEMS.register(
+                "lead_ore",
+                () -> new BlockItem(
+                        LEAD_ORE.get(),
+                        new Item.Properties()
+                )
+        );
 
         ModItems.ITEMS.register(
-                "deepslate_uranium_ore.json",
+                "deepslate_uranium_ore",
                 () -> new BlockItem(
                         DEEPSLATE_URANIUM_ORE.get(),
                         new Item.Properties()
                 )
         );
 
+        // Крафтовые блоки
         ModItems.ITEMS.register(
                 "raw_uranium_block",
                 () -> new BlockItem(
                         RAW_URANIUM_BLOCK.get(),
+                        new Item.Properties()
+                )
+        );
+
+        ModItems.ITEMS.register(
+                "lead_block",
+                () -> new BlockItem(
+                        LEAD_BLOCK.get(),
                         new Item.Properties()
                 )
         );

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "raw_uranium",
+  "ingredients": [
+    {
+      "item": "nuclearwinter:raw_uranium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "nuclearwinter:raw_uranium"
+  }
+}

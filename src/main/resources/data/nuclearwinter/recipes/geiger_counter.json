@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "nuclearwinter:lead_plate"
+    }
+  },
+  "pattern": [
+    " G ",
+    "IRI",
+    " L "
+  ],
+  "result": {
+    "item": "nuclearwinter:geiger_counter"
+  },
+  "show_notification": true
+}

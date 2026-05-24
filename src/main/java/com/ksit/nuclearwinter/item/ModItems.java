@@ -14,9 +14,19 @@ public class ModItems {
 
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, NuclearWinter.MODID);
+
+    // Сырые руды
     public static final RegistryObject<Item> RAW_URANIUM =
             ITEMS.register(
                     "raw_uranium",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> RAW_LEAD =
+            ITEMS.register(
+                    "raw_lead",
                     () -> new Item(
                             new Item.Properties()
                     )
@@ -29,10 +39,31 @@ public class ModItems {
                             new Item.Properties()
                     )
             );
+
+    //Слитки
+    public static final RegistryObject<Item> LEAD_INGOT =
+            ITEMS.register(
+                    "lead_ingot",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    //Крафтовые предметы
+    public static final RegistryObject<Item> LEAD_PLATE =
+            ITEMS.register(
+                    "lead_plate",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    // Функциональные предметы
     //Счётчик Гейгера
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER =
             ITEMS.register("geiger_counter", ItemGeigerCounter::new);
 
+    // Броня
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_HELMET =
             ITEMS.register("ragged_armor_helmet",
                     () -> new RaggedArmorItem(

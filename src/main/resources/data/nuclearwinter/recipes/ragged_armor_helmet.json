@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    " L ",
+    "G G",
+    "SLS"
+  ],
+  "result": {
+    "item": "nuclearwinter:ragged_armor_helmet"
+  },
+  "show_notification": true
+}

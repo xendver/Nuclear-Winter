@@ -1,0 +1,17 @@
+{
+  "item.nuclearwinter.geiger_counter": "Счетчик Гейгера",
+  "item.nuclearwinter.ragged_armor_helmet": "§6Защитный Тряпичный Шлем",
+  "item.nuclearwinter.ragged_armor_chestplate": "§6Защитный Тряпичный Нагрудник",
+  "item.nuclearwinter.ragged_armor_leggings": "§6Защитные Тряпичные Штаны",
+  "item.nuclearwinter.ragged_armor_boots": "§6Защитные Тряпичные Ботинки",
+  "block.nuclearwinter.uranium_ore": "Урановая Руда",
+  "block.nuclearwinter.deepslate_uranium_ore": "Глубинная Урановая Руда",
+  "block.nuclearwinter.raw_uranium_block": "Необработанный Урановый Блок",
+  "item.nuclearwinter.raw_uranium": "Необработанный уран",
+  "item.nuclearwinter.yellow_cake": "Жёлтый торт",
+  "block.nuclearwinter.lead_block": "Блок Свинца",
+  "item.nuclearwinter.raw_lead": "Сырой Свинец",
+  "block.nuclearwinter.lead_ore": "Свинцовая Руда",
+  "item.nuclearwinter.lead_ingot": "Свинцовый Слиток",
+  "item.nuclearwinter.lead_plate": "Свинцовая Пластина"
+}

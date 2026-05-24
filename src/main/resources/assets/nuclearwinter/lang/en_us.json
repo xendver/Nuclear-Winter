@@ -8,5 +8,10 @@
   "block.nuclearwinter.deepslate_uranium_ore": "Deepslate Uranium Ore",
   "block.nuclearwinter.raw_uranium_block": "Raw Uranium Block",
   "item.nuclearwinter.raw_uranium": "Raw Uranium",
-  "item.nuclearwinter.yellow_cake": "Yellow Cake"
+  "item.nuclearwinter.yellow_cake": "Yellow Cake",
+  "block.nuclearwinter.lead_block": "Lead Block",
+  "item.nuclearwinter.raw_lead": "Raw Lead",
+  "block.nuclearwinter.lead_ore": "Lead Ore",
+  "item.nuclearwinter.lead_ingot": "Lead Ingot",
+  "item.nuclearwinter.lead_plate": "Lead Plate"
 }
