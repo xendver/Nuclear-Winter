@@ -1,0 +1,12 @@
+{
+  "item.nuclearwinter.geiger_counter": "Счетчик Гейгера",
+  "item.nuclearwinter.ragged_armor_helmet": "§6Защитный Тряпичный Шлем",
+  "item.nuclearwinter.ragged_armor_chestplate": "§6Защитный Тряпичный Нагрудник",
+  "item.nuclearwinter.ragged_armor_leggings": "§6Защитные Тряпичные Штаны",
+  "item.nuclearwinter.ragged_armor_boots": "§6Защитные Тряпичные Ботинки",
+  "block.nuclearwinter.uranium_ore": "Урановая Руда",
+  "block.nuclearwinter.deepslate_uranium_ore": "Глубинная Урановая Руда",
+  "block.nuclearwinter.raw_uranium_block": "Необработанный Урановый Блок",
+  "item.nuclearwinter.raw_uranium": "Необработанный уран",
+  "item.nuclearwinter.yellow_cake": "Жёлтый торт"
+}

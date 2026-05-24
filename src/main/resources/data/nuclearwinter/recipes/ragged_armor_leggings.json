@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "S S",
+    "S S"
+  ],
+  "result": {
+    "item": "nuclearwinter:ragged_armor_leggings"
+  },
+  "show_notification": true
+}
