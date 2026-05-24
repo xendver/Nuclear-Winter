@@ -60,8 +60,8 @@ public class ModItems {
 
     // Функциональные предметы
     //Счётчик Гейгера
-    public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER =
-            ITEMS.register("geiger_counter", ItemGeigerCounter::new);
+    public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter",
+            () -> new ItemGeigerCounter(new Item.Properties()));
 
     // Броня
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_HELMET =

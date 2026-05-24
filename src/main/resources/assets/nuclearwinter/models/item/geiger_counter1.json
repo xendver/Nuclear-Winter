@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "perspectives": {
+    "gui": {
+      "parent": "nuclearwinter:item/geiger_counter_gui"
+    },
+    "ground": {
+      "parent": "nuclearwinter:item/geiger_counter_gui"
+    },
+    "fixed": {
+      "parent": "nuclearwinter:item/geiger_counter_gui"
+    }
+  }
+}
