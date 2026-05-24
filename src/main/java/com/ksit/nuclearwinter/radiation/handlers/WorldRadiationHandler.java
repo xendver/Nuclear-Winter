@@ -21,6 +21,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 
+//иъъпъъоъъиълъ чо я несу ыыыыыыыыыыыыыыы я глупый
+
 public class WorldRadiationHandler {
 
     private static class ActiveSource {
