@@ -34,11 +34,13 @@ public final class ModCreativeTabs {
                                 //Блоки
                                 output.accept(ModBlocks.RAW_URANIUM_BLOCK.get());
                                 output.accept(ModBlocks.LEAD_BLOCK.get());
+                                output.accept(ModBlocks.RAW_LEAD_BLOCK.get());
 
                                 // Блокы руды
                                 output.accept(ModBlocks.URANIUM_ORE.get());
                                 output.accept(ModBlocks.DEEPSLATE_URANIUM_ORE.get());
                                 output.accept(ModBlocks.LEAD_ORE.get());
+                                output.accept(ModBlocks.DEEPSLATE_LEAD_ORE.get());
 
 
                                 // Слитки
@@ -46,6 +48,7 @@ public final class ModCreativeTabs {
 
                                 //Крафтовые предметы
                                 output.accept(ModItems.LEAD_PLATE.get());
+                                output.accept(ModItems.LEAD_NUGGET.get());
 
                                 // Броня
                                 output.accept(ModItems.RAGGED_ARMOR_HELMET.get());

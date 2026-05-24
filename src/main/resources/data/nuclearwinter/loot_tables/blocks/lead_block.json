@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "nuclearwinter:raw_uranium"
+          "name": "nuclearwinter:lead_block"
         }
       ]
     }

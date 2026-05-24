@@ -33,6 +33,17 @@ public final class ModBlocks {
                     )
             );
 
+    public static final RegistryObject<Block> DEEPSLATE_LEAD_ORE =
+            BLOCKS.register(
+                    "deepslate_lead_ore",
+                    () -> new DropExperienceBlock(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.STONE)
+                                    .strength(7f, 9f)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
     public static final RegistryObject<Block> LEAD_ORE =
             BLOCKS.register(
                     "lead_ore",
@@ -59,6 +70,18 @@ public final class ModBlocks {
     public static final RegistryObject<Block> RAW_URANIUM_BLOCK =
             BLOCKS.register(
                     "raw_uranium_block",
+                    () -> new Block(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.COLOR_GREEN)
+                                    .strength(10f, 14f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
+    public static final RegistryObject<Block> RAW_LEAD_BLOCK =
+            BLOCKS.register(
+                    "raw_lead_block",
                     () -> new Block(
                             BlockBehaviour.Properties.of()
                                     .mapColor(MapColor.COLOR_GREEN)
@@ -99,6 +122,14 @@ public final class ModBlocks {
         );
 
         ModItems.ITEMS.register(
+                "deepslate_lead_ore",
+                () -> new BlockItem(
+                        DEEPSLATE_LEAD_ORE.get(),
+                        new Item.Properties()
+                )
+        );
+
+        ModItems.ITEMS.register(
                 "deepslate_uranium_ore",
                 () -> new BlockItem(
                         DEEPSLATE_URANIUM_ORE.get(),
@@ -111,6 +142,14 @@ public final class ModBlocks {
                 "raw_uranium_block",
                 () -> new BlockItem(
                         RAW_URANIUM_BLOCK.get(),
+                        new Item.Properties()
+                )
+        );
+
+        ModItems.ITEMS.register(
+                "raw_lead_block",
+                () -> new BlockItem(
+                        RAW_LEAD_BLOCK.get(),
                         new Item.Properties()
                 )
         );

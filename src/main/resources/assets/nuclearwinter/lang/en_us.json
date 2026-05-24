@@ -13,5 +13,8 @@
   "item.nuclearwinter.raw_lead": "Raw Lead",
   "block.nuclearwinter.lead_ore": "Lead Ore",
   "item.nuclearwinter.lead_ingot": "Lead Ingot",
-  "item.nuclearwinter.lead_plate": "Lead Plate"
+  "item.nuclearwinter.lead_plate": "Lead Plate",
+  "item.nuclearwinter.lead_nugget": "Lead Nugget",
+  "block.nuclearwinter.raw_lead_block": "Raw Lead Block",
+  "block.nuclearwinter.deepslate_lead_ore": "Deepslate Lead Ore"
 }
