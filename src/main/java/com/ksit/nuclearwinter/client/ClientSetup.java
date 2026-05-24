@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(
-        modid = NuclearWinter.MODID,
+        modid = NuclearWinter.MOD_ID,
         bus = Mod.EventBusSubscriber.Bus.MOD,
         value = Dist.CLIENT
 )

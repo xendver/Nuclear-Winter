@@ -1,5 +1,6 @@
 package com.ksit.nuclearwinter.radiation.handlers;
 
+import com.ksit.nuclearwinter.NuclearWinter;
 import com.ksit.nuclearwinter.radiation.ChunkRadiationProvider;
 import com.ksit.nuclearwinter.radiation.IChunkRadiation;
 import com.ksit.nuclearwinter.radiation.RadiationCapability;
@@ -13,7 +14,7 @@ public class ChunkEventHandler {
 
     // Хранение capability в чанке
     private static final ResourceLocation CAP_KEY =
-            ResourceLocation.fromNamespaceAndPath("nuclearwinter", "chunk_radiation");
+            ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "chunk_radiation");
 
     // Вызывается при создании каждого нового чанка
     // AttachCapabilitiesEvent<LevelChunk> - прикрепляем провайдер к каждому чанку

@@ -11,7 +11,7 @@ public class PacketHandler {
     private static final String PROTOCOL_VERSION = "1";
 
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.fromNamespaceAndPath(NuclearWinter.MODID, "main"),
+            ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "main"),
             () -> PROTOCOL_VERSION,
             // Совпадение версий = клиент принимает соединение
             PROTOCOL_VERSION::equals,

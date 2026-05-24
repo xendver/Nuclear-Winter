@@ -1,5 +1,6 @@
 package com.ksit.nuclearwinter.radiation.handlers;
 
+import com.ksit.nuclearwinter.NuclearWinter;
 import com.ksit.nuclearwinter.radiation.EntityRadiationProvider;
 import com.ksit.nuclearwinter.radiation.RadiationCapability;
 import com.ksit.nuclearwinter.radiation.illness.RadiationIllnessProvider;
@@ -11,9 +12,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class EntityEventHandler {
 
     private static final ResourceLocation ENTITY_RAD_KEY =
-            ResourceLocation.fromNamespaceAndPath("nuclearwinter", "entity_radiation");
+            ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "entity_radiation");
     private static final ResourceLocation ILLNESS_KEY =
-            ResourceLocation.fromNamespaceAndPath("nuclearwinter", "radiation_illness");
+            ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "radiation_illness");
 
     // Только для Entity; ItemStack полностью убран отсюда
     // Capability для итемов теперь через ItemGeigerCounter.initCapabilities()

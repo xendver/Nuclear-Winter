@@ -13,7 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModItems {
 
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, NuclearWinter.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, NuclearWinter.MOD_ID);
 
     // Сырые руды
     public static final RegistryObject<Item> RAW_URANIUM =

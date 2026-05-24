@@ -18,7 +18,7 @@ public final class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(
                     ForgeRegistries.BLOCKS,
-                    NuclearWinter.MODID
+                    NuclearWinter.MOD_ID
             );
 
     // Руды

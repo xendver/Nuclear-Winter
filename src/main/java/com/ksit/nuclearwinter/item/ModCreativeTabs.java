@@ -14,7 +14,7 @@ public final class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(
                     Registries.CREATIVE_MODE_TAB,
-                    NuclearWinter.MODID
+                    NuclearWinter.MOD_ID
             );
 
     public static final RegistryObject<CreativeModeTab> NUCLEAR_TAB =

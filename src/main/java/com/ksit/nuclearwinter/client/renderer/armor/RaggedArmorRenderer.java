@@ -12,6 +12,6 @@ public class RaggedArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
 
     public RaggedArmorRenderer() {
 
-        super(new DefaultedItemGeoModel<>(new ResourceLocation(NuclearWinter.MODID, "armor/raggedarmor")));
+        super(new DefaultedItemGeoModel<>(new ResourceLocation(NuclearWinter.MOD_ID, "armor/raggedarmor")));
     }
 }
