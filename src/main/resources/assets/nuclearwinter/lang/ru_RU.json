@@ -8,5 +8,10 @@
   "block.nuclearwinter.deepslate_uranium_ore": "Глубинная Урановая Руда",
   "block.nuclearwinter.raw_uranium_block": "Необработанный Урановый Блок",
   "item.nuclearwinter.raw_uranium": "Необработанный уран",
-  "item.nuclearwinter.yellow_cake": "Жёлтый торт"
+  "item.nuclearwinter.yellow_cake": "Жёлтый торт",
+  "block.nuclearwinter.lead_block": "Блок Свинца",
+  "item.nuclearwinter.raw_lead": "Сырой Свинец",
+  "block.nuclearwinter.lead_ore": "Свинцовая Руда",
+  "item.nuclearwinter.lead_ingot": "Свинцовый Слиток",
+  "item.nuclearwinter.lead_plate": "Свинцовая Пластина"
 }

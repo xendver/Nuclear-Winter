@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "group": "raw_uranium",
+  "group": "lead_ingot",
   "ingredients": [
     {
-      "item": "nuclearwinter:raw_uranium_block"
+      "item": "nuclearwinter:lead_block"
     }
   ],
   "result": {
     "count": 9,
-    "item": "nuclearwinter:raw_uranium"
+    "item": "nuclearwinter:lead_ingot"
   }
 }

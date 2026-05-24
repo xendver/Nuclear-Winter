@@ -26,17 +26,39 @@ public final class ModCreativeTabs {
                                     new ItemStack(ModItems.RAW_URANIUM.get()))
                             .displayItems((params, output) -> {
 
+                                // Сырые руды
                                 output.accept(ModItems.RAW_URANIUM.get());
-                                output.accept(ModItems.YELLOW_CAKE.get());
-                                output.accept(ModItems.GEIGER_COUNTER.get());
+                                output.accept(ModItems.RAW_LEAD.get());
+
+
+                                //Блоки
+                                output.accept(ModBlocks.RAW_URANIUM_BLOCK.get());
+                                output.accept(ModBlocks.LEAD_BLOCK.get());
+
+                                // Блокы руды
+                                output.accept(ModBlocks.URANIUM_ORE.get());
+                                output.accept(ModBlocks.DEEPSLATE_URANIUM_ORE.get());
+                                output.accept(ModBlocks.LEAD_ORE.get());
+
+
+                                // Слитки
+                                output.accept(ModItems.LEAD_INGOT.get());
+
+                                //Крафтовые предметы
+                                output.accept(ModItems.LEAD_PLATE.get());
+
+                                // Броня
                                 output.accept(ModItems.RAGGED_ARMOR_HELMET.get());
                                 output.accept(ModItems.RAGGED_ARMOR_CHESTPLATE.get());
                                 output.accept(ModItems.RAGGED_ARMOR_LEGGINGS.get());
                                 output.accept(ModItems.RAGGED_ARMOR_BOOTS.get());
 
-                                output.accept(ModBlocks.URANIUM_ORE.get());
-                                output.accept(ModBlocks.DEEPSLATE_URANIUM_ORE.get());
-                                output.accept(ModBlocks.RAW_URANIUM_BLOCK.get());
+                                // Функциональные предметы
+                                output.accept(ModItems.YELLOW_CAKE.get());
+                                output.accept(ModItems.GEIGER_COUNTER.get());
+
+
+
                             })
                             .build()
             );
