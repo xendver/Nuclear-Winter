@@ -58,6 +58,14 @@ public class ModItems {
                     )
             );
 
+    public static final RegistryObject<Item> LEAD_NUGGET =
+            ITEMS.register(
+                    "lead_nugget",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
     // Функциональные предметы
     //Счётчик Гейгера
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter",

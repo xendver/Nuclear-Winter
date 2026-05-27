@@ -2,11 +2,11 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 9,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "nuclearwinter:raw_uranium"
+          "name": "nuclearwinter:raw_uranium_block"
         }
       ]
     }

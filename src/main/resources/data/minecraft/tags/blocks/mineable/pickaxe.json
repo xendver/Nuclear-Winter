@@ -1,0 +1,11 @@
+{
+  "values": [
+    "nuclearwinter:uranium_ore",
+    "nuclearwinter:lead_ore",
+    "nuclearwinter:lead_block",
+    "nuclearwinter:raw_uranium_block",
+    "nuclearwinter:raw_lead_block",
+    "nuclearwinter:deepslate_uranium_ore",
+    "nuclearwinter:deepslate_lead_ore"
+  ]
+}

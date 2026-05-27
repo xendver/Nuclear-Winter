@@ -13,5 +13,8 @@
   "item.nuclearwinter.raw_lead": "Сырой Свинец",
   "block.nuclearwinter.lead_ore": "Свинцовая Руда",
   "item.nuclearwinter.lead_ingot": "Свинцовый Слиток",
-  "item.nuclearwinter.lead_plate": "Свинцовая Пластина"
+  "item.nuclearwinter.lead_plate": "Свинцовая Пластина",
+  "item.nuclearwinter.lead_nugget": "Кусочек Свинца",
+  "block.nuclearwinter.raw_lead_block": "Необработанный Свинец",
+  "block.nuclearwinter.deepslate_lead_ore": "Глубинная Свинцовая Руда"
 }
