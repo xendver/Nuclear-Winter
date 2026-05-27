@@ -1,0 +1,7 @@
+// 1.20.1	2026-05-27T20:46:12.1119899	Registries
+a01ffc09933e28d2dd149c48343ca99757c5dc99 data/nuclearwinter/forge/biome_modifier/add_lead_ore.json
+819fb3a6b894d7c8c4d229cc88b1f2e581d2034f data/nuclearwinter/forge/biome_modifier/add_uranium_ore.json
+50b14c5a89eac3458d8f9f69c075adf7dd4e919c data/nuclearwinter/worldgen/configured_feature/lead_ore.json
+c93048f69c06c898e96f3dd0deb8f1a82a9347f1 data/nuclearwinter/worldgen/configured_feature/uranium_ore.json
+e0c3560461eea4b4192fdcd1836409d315b47db4 data/nuclearwinter/worldgen/placed_feature/lead_ore.json
+fbc12dda9bad17f0d779d90ffe6b6c474023f8c9 data/nuclearwinter/worldgen/placed_feature/uranium_ore.json
