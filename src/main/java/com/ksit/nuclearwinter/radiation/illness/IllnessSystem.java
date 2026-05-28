@@ -3,7 +3,9 @@ package com.ksit.nuclearwinter.radiation.illness;
 import com.ksit.nuclearwinter.radiation.calc.ResistanceRegistry;
 import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import com.ksit.nuclearwinter.radiation.spatial.ChunkSpatialIndex;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,7 +13,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class IllnessSystem {
 
@@ -21,44 +25,46 @@ public class IllnessSystem {
         List<LivingEntity> stageDamage1 = new ArrayList<>();
         List<LivingEntity> stageDamage3 = new ArrayList<>();
 
-        for (ChunkPos pos : index.getOccupiedChunks()) {
+        for (ServerPlayer player : level.players()) {
+            for (ChunkPos pos : getLoadedChunksForPlayer(player)) {
 
-            LevelChunk chunk = level.getChunk(pos.x, pos.z);
+                LevelChunk chunk = level.getChunk(pos.x, pos.z);
 
-            chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(chunkRad -> {
+                chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
+                        .ifPresent(chunkRad -> {
 
-                        if (chunkRad.getRadiationLevel() <= 0) return;
+                            if (chunkRad.getRadiationLevel() <= 0) return;
 
-                        float chunkLevel = chunkRad.getRadiationLevel();
+                            float chunkLevel = chunkRad.getRadiationLevel();
 
-                        level.getEntities().getAll().forEach(entity -> {
+                            level.getEntities().getAll().forEach(entity -> {
 
-                            if (!(entity instanceof LivingEntity living)) return;
+                                if (!(entity instanceof LivingEntity living)) return;
 
-                            float multiplier =
-                                    ResistanceRegistry.getDoseMultiplier(entity);
+                                float multiplier =
+                                        ResistanceRegistry.getDoseMultiplier(entity);
 
-                            if (multiplier <= 0f) return;
+                                if (multiplier <= 0f) return;
 
-                            entity.getCapability(
-                                    RadiationCapability.RADIATION_ILLNESS
-                            ).ifPresent(illness -> {
+                                entity.getCapability(
+                                        RadiationCapability.RADIATION_ILLNESS
+                                ).ifPresent(illness -> {
 
-                                illness.addRadiationPoints(
-                                        chunkLevel * 0.1f * multiplier
-                                );
+                                    illness.addRadiationPoints(
+                                            chunkLevel * 0.1f * multiplier
+                                    );
 
-                                applyStagePoisons(living, illness.getStage());
+                                    applyStagePoisons(living, illness.getStage());
 
-                                if (illness.getStage() == IllnessStage.STAGE_3)
-                                    stageDamage1.add(living);
+                                    if (illness.getStage() == IllnessStage.STAGE_3)
+                                        stageDamage1.add(living);
 
-                                if (illness.getStage() == IllnessStage.STAGE_4)
-                                    stageDamage3.add(living);
+                                    if (illness.getStage() == IllnessStage.STAGE_4)
+                                        stageDamage3.add(living);
+                                });
                             });
                         });
-                    });
+            }
         }
 
         for (LivingEntity e : stageDamage1) {
@@ -68,6 +74,31 @@ public class IllnessSystem {
         for (LivingEntity e : stageDamage3) {
             e.hurt(e.level().damageSources().magic(), 3.0f);
         }
+    }
+
+    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player) {
+        ServerLevel level = (ServerLevel) player.level();
+        ChunkMap chunkMap = level.getChunkSource().chunkMap;
+
+        int viewDistance = level.getServer().getPlayerList().getViewDistance();
+
+        ChunkPos playerChunk = player.chunkPosition();
+        Set<ChunkPos> loadedChunks = new HashSet<>();
+
+        for (int dx = -viewDistance; dx <= viewDistance; dx++) {
+            for (int dz = -viewDistance; dz <= viewDistance; dz++) {
+                ChunkPos chunkPos = new ChunkPos(playerChunk.x + dx, playerChunk.z + dz);
+
+                LevelChunk chunk = level.getChunkSource()
+                        .getChunkNow(chunkPos.x, chunkPos.z);
+
+                if (chunk != null) {
+                    loadedChunks.add(chunkPos);
+                }
+            }
+        }
+
+        return loadedChunks;
     }
 
     private void applyStagePoisons(LivingEntity entity,
