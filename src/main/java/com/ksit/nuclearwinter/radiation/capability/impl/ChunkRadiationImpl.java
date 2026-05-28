@@ -1,5 +1,6 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.impl;
 
+import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
 import net.minecraft.nbt.CompoundTag;
 
 // IChunkRadiation, хранение уровня радиации одного чанка

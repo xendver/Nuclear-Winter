@@ -1,5 +1,8 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.provider;
 
+import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.impl.ChunkRadiationImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,8 +29,12 @@ public class ChunkRadiationProvider implements ICapabilitySerializable<CompoundT
     }
 
     @Override
-    public CompoundTag serializeNBT() { return instance.serializeNBT(); }
+    public CompoundTag serializeNBT() {
+        return instance.serializeNBT();
+    }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) { instance.deserializeNBT(nbt); }
+    public void deserializeNBT(CompoundTag nbt) {
+        instance.deserializeNBT(nbt);
+    }
 }

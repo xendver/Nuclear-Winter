@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.api;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -7,11 +7,13 @@ import net.minecraft.nbt.CompoundTag;
 public interface IChunkRadiation {
 
     float getRadiationLevel();
-    void  setRadiationLevel(float level);
+
+    void setRadiationLevel(float level);
 
     // Добавление радиации; amount может быть отрицательным
-    void  addRadiation(float amount);
+    void addRadiation(float amount);
 
     CompoundTag serializeNBT();
-    void        deserializeNBT(CompoundTag nbt);
+
+    void deserializeNBT(CompoundTag nbt);
 }

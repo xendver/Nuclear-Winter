@@ -1,5 +1,8 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.provider;
 
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.impl.RadiationImpl;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -8,8 +11,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// Провайдер прикрепляет RadiationImpl к энтити через систему Capability
-public class EntityRadiationProvider implements ICapabilitySerializable<CompoundTag> {
+// Провайдер прикрепляет RadiationImpl к ItemStack через систему Capability
+public class ItemRadiationProvider implements ICapabilitySerializable<CompoundTag> {
 
     private final RadiationImpl instance = new RadiationImpl();
     private final LazyOptional<IRadiation> optional = LazyOptional.of(() -> instance);
@@ -21,8 +24,12 @@ public class EntityRadiationProvider implements ICapabilitySerializable<Compound
     }
 
     @Override
-    public CompoundTag serializeNBT() { return instance.serializeNBT(); }
+    public CompoundTag serializeNBT() {
+        return instance.serializeNBT();
+    }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) { instance.deserializeNBT(nbt); }
+    public void deserializeNBT(CompoundTag nbt) {
+        instance.deserializeNBT(nbt);
+    }
 }

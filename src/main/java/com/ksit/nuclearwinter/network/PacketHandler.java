@@ -19,9 +19,9 @@ public class PacketHandler {
             PROTOCOL_VERSION::equals
     );
 
-    public static void register() {
-        int id = 0;
+    public static int id = 0;
 
+    public static void register() {
         // Пакет:
         // id          - уникальный номер пакета
         // класс       - тип пакета

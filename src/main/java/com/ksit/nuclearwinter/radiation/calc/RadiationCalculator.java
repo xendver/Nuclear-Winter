@@ -1,4 +1,7 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.calc;
+
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.api.RadiationConfig;
 
 import java.util.ArrayList;
 import java.util.List;

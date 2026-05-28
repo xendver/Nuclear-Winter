@@ -2,7 +2,13 @@ package com.ksit.nuclearwinter.radiation.handlers;
 
 import com.ksit.nuclearwinter.network.PacketChunkRadiation;
 import com.ksit.nuclearwinter.network.PacketHandler;
-import com.ksit.nuclearwinter.radiation.*;
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.api.RadiationConfig;
+import com.ksit.nuclearwinter.radiation.calc.RadiationCalculator;
+import com.ksit.nuclearwinter.radiation.calc.ResistanceRegistry;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.impl.RadiationImpl;
+import com.ksit.nuclearwinter.radiation.storage.BlockRadiationStorage;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ChunkMap;

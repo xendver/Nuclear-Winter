@@ -1,5 +1,6 @@
-package com.ksit.nuclearwinter.radiation.illness;
+package com.ksit.nuclearwinter.radiation.api;
 
+import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
 import net.minecraft.nbt.CompoundTag;
 
 // Интерфейс накопленного облучения entity/player

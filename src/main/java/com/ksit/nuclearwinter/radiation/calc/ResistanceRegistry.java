@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.calc;
 
 import net.minecraft.world.entity.Entity;
 import java.util.HashMap;

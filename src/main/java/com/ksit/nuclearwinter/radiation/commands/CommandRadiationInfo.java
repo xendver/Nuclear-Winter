@@ -1,11 +1,11 @@
 package com.ksit.nuclearwinter.radiation.commands;
 
-import com.ksit.nuclearwinter.radiation.BlockRadiationStorage;
-import com.ksit.nuclearwinter.radiation.IChunkRadiation;
-import com.ksit.nuclearwinter.radiation.IRadiation;
-import com.ksit.nuclearwinter.radiation.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.storage.BlockRadiationStorage;
+import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
-import com.ksit.nuclearwinter.radiation.illness.IRadiationIllness;
+import com.ksit.nuclearwinter.radiation.api.IRadiationIllness;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;

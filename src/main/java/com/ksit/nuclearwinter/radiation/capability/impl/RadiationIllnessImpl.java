@@ -1,5 +1,7 @@
-package com.ksit.nuclearwinter.radiation.illness;
+package com.ksit.nuclearwinter.radiation.capability.impl;
 
+import com.ksit.nuclearwinter.radiation.api.IRadiationIllness;
+import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
 import net.minecraft.nbt.CompoundTag;
 
 public class RadiationIllnessImpl implements IRadiationIllness {

@@ -2,7 +2,7 @@ package com.ksit.nuclearwinter;
 
 import com.ksit.nuclearwinter.item.ModItems;
 import com.ksit.nuclearwinter.network.PacketHandler;
-import com.ksit.nuclearwinter.radiation.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import com.ksit.nuclearwinter.radiation.commands.CommandRadiationInfo;
 import com.ksit.nuclearwinter.radiation.handlers.ChunkEventHandler;
 import com.ksit.nuclearwinter.radiation.handlers.EntityEventHandler;
