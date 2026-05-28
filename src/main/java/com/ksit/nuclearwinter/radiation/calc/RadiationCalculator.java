@@ -1,6 +1,5 @@
 package com.ksit.nuclearwinter.radiation.calc;
 
-import com.ksit.nuclearwinter.radiation.api.IRadiation;
 import com.ksit.nuclearwinter.radiation.api.RadiationConfig;
 
 import java.util.ArrayList;
@@ -23,20 +22,6 @@ public final class RadiationCalculator {
         }
     }
 
-    // === ВСПОМОГАТЕЛЬНЫЙ КЛАСС ActiveSource =======================================
-    // Нужен калькулятору - позиция источника в чанках + его свойства
-    public static class ActiveSource {
-        public final int        chunkX;
-        public final int        chunkZ;
-        public final IRadiation radiation;
-
-        public ActiveSource(int chunkX, int chunkZ, IRadiation radiation) {
-            this.chunkX    = chunkX;
-            this.chunkZ    = chunkZ;
-            this.radiation = radiation;
-        }
-    }
-
     // Суммарный уровень радиации для чанка (chunkX, chunkZ) от списка активных источников, с учётом синергии
     // chunkX - координата чанка по X
     // chunkZ - координата чанка по Z
@@ -48,17 +33,17 @@ public final class RadiationCalculator {
 
         for (ActiveSource src : sources) {
             // Расстояние от источника до чанка (в чанках)
-            float dx = chunkX - src.chunkX;
-            float dz = chunkZ - src.chunkZ;
+            float dx = chunkX - src.chunkX();
+            float dz = chunkZ - src.chunkZ();
             float d  = (float) Math.sqrt(dx * dx + dz * dz);
 
             // Вклад источника: ipower - dpc * distance, не меньше 0
-            float c  = src.radiation.getInitialPower()
-                    - src.radiation.getDecayPerChunk() * d;
+            float c  = src.radiation().getInitialPower()
+                    - src.radiation().getDecayPerChunk() * d;
 
             // Источник влияет только если чанк в радиусе И вклад положительный
-            if (c > 0f && src.radiation.getRadius() > d) {
-                contribs.add(new Contrib(c, src.chunkX, src.chunkZ));
+            if (c > 0f && src.radiation().getRadius() > d) {
+                contribs.add(new Contrib(c, src.chunkX(), src.chunkZ()));
             }
         }
 
