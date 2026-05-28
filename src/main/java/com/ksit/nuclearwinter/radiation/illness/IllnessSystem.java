@@ -25,8 +25,7 @@ public class IllnessSystem {
         List<LivingEntity> stageDamage1 = new ArrayList<>();
         List<LivingEntity> stageDamage3 = new ArrayList<>();
 
-        for (ServerPlayer player : level.players()) {
-            for (ChunkPos pos : getLoadedChunksForPlayer(player)) {
+            for (ChunkPos pos :index.getOccupiedChunks()) {
 
                 LevelChunk chunk = level.getChunk(pos.x, pos.z);
 
@@ -37,16 +36,20 @@ public class IllnessSystem {
 
                             float chunkLevel = chunkRad.getRadiationLevel();
 
-                            level.getEntities().getAll().forEach(entity -> {
-
-                                if (!(entity instanceof LivingEntity living)) return;
+                            level.getEntitiesOfClass(
+                                    LivingEntity.class,
+                                    new net.minecraft.world.phys.AABB(
+                                            pos.x * 16, -64, pos.z * 16,
+                                            pos.x * 16 + 16, 320, pos.z * 16 + 16
+                                    )
+                            ).forEach(living -> {
 
                                 float multiplier =
-                                        ResistanceRegistry.getDoseMultiplier(entity);
+                                        ResistanceRegistry.getDoseMultiplier(living);
 
                                 if (multiplier <= 0f) return;
 
-                                entity.getCapability(
+                                living.getCapability(
                                         RadiationCapability.RADIATION_ILLNESS
                                 ).ifPresent(illness -> {
 
@@ -65,7 +68,7 @@ public class IllnessSystem {
                             });
                         });
             }
-        }
+
 
         for (LivingEntity e : stageDamage1) {
             e.hurt(e.level().damageSources().magic(), 1.0f);
@@ -74,31 +77,6 @@ public class IllnessSystem {
         for (LivingEntity e : stageDamage3) {
             e.hurt(e.level().damageSources().magic(), 3.0f);
         }
-    }
-
-    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player) {
-        ServerLevel level = (ServerLevel) player.level();
-        ChunkMap chunkMap = level.getChunkSource().chunkMap;
-
-        int viewDistance = level.getServer().getPlayerList().getViewDistance();
-
-        ChunkPos playerChunk = player.chunkPosition();
-        Set<ChunkPos> loadedChunks = new HashSet<>();
-
-        for (int dx = -viewDistance; dx <= viewDistance; dx++) {
-            for (int dz = -viewDistance; dz <= viewDistance; dz++) {
-                ChunkPos chunkPos = new ChunkPos(playerChunk.x + dx, playerChunk.z + dz);
-
-                LevelChunk chunk = level.getChunkSource()
-                        .getChunkNow(chunkPos.x, chunkPos.z);
-
-                if (chunk != null) {
-                    loadedChunks.add(chunkPos);
-                }
-            }
-        }
-
-        return loadedChunks;
     }
 
     private void applyStagePoisons(LivingEntity entity,
