@@ -51,10 +51,29 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.LEAD_NUGGET.get());
 
                                 // Броня
+                                //tier1
                                 output.accept(ModItems.RAGGED_ARMOR_HELMET.get());
                                 output.accept(ModItems.RAGGED_ARMOR_CHESTPLATE.get());
                                 output.accept(ModItems.RAGGED_ARMOR_LEGGINGS.get());
                                 output.accept(ModItems.RAGGED_ARMOR_BOOTS.get());
+
+                                //tier2
+                                output.accept(ModItems.MOPP_ARMOR_HELMET.get());
+                                output.accept(ModItems.MOPP_ARMOR_CHESTPLATE.get());
+                                output.accept(ModItems.MOPP_ARMOR_LEGGINGS.get());
+                                output.accept(ModItems.MOPP_ARMOR_BOOTS.get());
+
+                                //tier3
+                                output.accept(ModItems.HAZMAT_ARMOR_HELMET.get());
+                                output.accept(ModItems.HAZMAT_ARMOR_CHESTPLATE.get());
+                                output.accept(ModItems.HAZMAT_ARMOR_LEGGINGS.get());
+                                output.accept(ModItems.HAZMAT_ARMOR_BOOTS.get());
+
+                                //tier4
+                                output.accept(ModItems.ARK_ARMOR_HELMET.get());
+                                output.accept(ModItems.ARK_ARMOR_CHESTPLATE.get());
+                                output.accept(ModItems.ARK_ARMOR_LEGGINGS.get());
+                                output.accept(ModItems.ARK_ARMOR_BOOTS.get());
 
                                 // Функциональные предметы
                                 output.accept(ModItems.YELLOW_CAKE.get());

@@ -1,6 +1,9 @@
 package com.ksit.nuclearwinter.item;
 
 import com.ksit.nuclearwinter.NuclearWinter;
+import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
+import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
+import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
 import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
@@ -72,6 +75,7 @@ public class ModItems {
             () -> new ItemGeigerCounter(new Item.Properties()));
 
     // Броня
+    //tier 1
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_HELMET =
             ITEMS.register("ragged_armor_helmet",
                     () -> new RaggedArmorItem(
@@ -99,6 +103,105 @@ public class ModItems {
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_BOOTS =
             ITEMS.register("ragged_armor_boots",
                     () -> new RaggedArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.BOOTS,
+                            new Item.Properties()
+                    ));
+
+    //tier 2
+    public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_HELMET =
+            ITEMS.register("mopp_armor_helmet",
+                    () -> new MOPPArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.HELMET,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_CHESTPLATE =
+            ITEMS.register("mopp_armor_chestplate",
+                    () -> new MOPPArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.CHESTPLATE,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_LEGGINGS =
+            ITEMS.register("mopp_armor_leggings",
+                    () -> new MOPPArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.LEGGINGS,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_BOOTS =
+            ITEMS.register("mopp_armor_boots",
+                    () -> new MOPPArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.BOOTS,
+                            new Item.Properties()
+                    ));
+
+    //tier 3
+    public static final RegistryObject<HazmatArmorItem> HAZMAT_ARMOR_HELMET =
+            ITEMS.register("hazmat_armor_helmet",
+                    () -> new HazmatArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.HELMET,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<HazmatArmorItem> HAZMAT_ARMOR_CHESTPLATE =
+            ITEMS.register("hazmat_armor_chestplate",
+                    () -> new HazmatArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.CHESTPLATE,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<HazmatArmorItem> HAZMAT_ARMOR_LEGGINGS =
+            ITEMS.register("hazmat_armor_leggings",
+                    () -> new HazmatArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.LEGGINGS,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<HazmatArmorItem> HAZMAT_ARMOR_BOOTS =
+            ITEMS.register("hazmat_armor_boots",
+                    () -> new HazmatArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.BOOTS,
+                            new Item.Properties()
+                    ));
+
+    //tier 4
+    public static final RegistryObject<ArkArmorItem> ARK_ARMOR_HELMET =
+            ITEMS.register("ark_armor_helmet",
+                    () -> new ArkArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.HELMET,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<ArkArmorItem> ARK_ARMOR_CHESTPLATE =
+            ITEMS.register("ark_armor_chestplate",
+                    () -> new ArkArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.CHESTPLATE,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<ArkArmorItem> ARK_ARMOR_LEGGINGS =
+            ITEMS.register("ark_armor_leggings",
+                    () -> new ArkArmorItem(
+                            ArmorMaterials.DIAMOND,
+                            ArmorItem.Type.LEGGINGS,
+                            new Item.Properties()
+                    ));
+
+    public static final RegistryObject<ArkArmorItem> ARK_ARMOR_BOOTS =
+            ITEMS.register("ark_armor_boots",
+                    () -> new ArkArmorItem(
                             ArmorMaterials.DIAMOND,
                             ArmorItem.Type.BOOTS,
                             new Item.Properties()

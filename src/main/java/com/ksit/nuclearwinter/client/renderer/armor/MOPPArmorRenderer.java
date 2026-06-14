@@ -8,11 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-// Tier 1
-public class RaggedArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
+// Tier 2
+public class MOPPArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
 
-    public RaggedArmorRenderer() {
+    public MOPPArmorRenderer() {
 
-        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/ragged_armor")));
+        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/moop_armor")));
     }
 }
