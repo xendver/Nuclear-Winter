@@ -8,11 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-// Tier 1
-public class RaggedArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
+// Tier 3
+public class HazmatArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
 
-    public RaggedArmorRenderer() {
+    public HazmatArmorRenderer() {
 
-        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/ragged_armor")));
+        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/hazmat_armor")));
     }
 }
