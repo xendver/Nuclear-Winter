@@ -18,23 +18,12 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.ksit.nuclearwinter.radiation.ActiveSource;
 
 import java.util.*;
 
 
 public class WorldRadiationHandler {
-
-    private static class ActiveSource {
-        final int chunkX, chunkZ;
-        final IRadiation radiation;
-
-        ActiveSource(int chunkX, int chunkZ, IRadiation radiation) {
-            this.chunkX = chunkX;
-            this.chunkZ = chunkZ;
-            this.radiation = radiation;
-        }
-    }
-
     private final Map<ChunkPos, List<ActiveSource>> spatialSources = new HashMap<>();
     public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player){
         ServerLevel level = (ServerLevel) player.level();
@@ -78,38 +67,38 @@ public class WorldRadiationHandler {
 
     // =========================================================================================
 
-    private List<LevelChunk> getLoadedChunks(ServerLevel level) {
-
-        List<LevelChunk> chunks = new ArrayList<>();
-
-        for (ServerPlayer player : level.players()) {
-
-            LevelChunk center =
-                    level.getChunkAt(player.blockPosition());
-
-            int radius = 8;
-
-            for (int dx = -radius; dx <= radius; dx++) {
-                for (int dz = -radius; dz <= radius; dz++) {
-
-                    int cx = center.getPos().x + dx;
-                    int cz = center.getPos().z + dz;
-
-                    if (level.hasChunk(cx, cz)) {
-
-                        LevelChunk chunk =
-                                level.getChunk(cx, cz);
-
-                        if (!chunks.contains(chunk)) {
-                            chunks.add(chunk);
-                        }
-                    }
-                }
-            }
-        }
-
-        return chunks;
-    }
+//    private List<LevelChunk> getLoadedChunks(ServerLevel level) {
+//
+//        List<LevelChunk> chunks = new ArrayList<>();
+//
+//        for (ServerPlayer player : level.players()) {
+//
+//            LevelChunk center =
+//                    level.getChunkAt(player.blockPosition());
+//
+//            int radius = 8;
+//
+//            for (int dx = -radius; dx <= radius; dx++) {
+//                for (int dz = -radius; dz <= radius; dz++) {
+//
+//                    int cx = center.getPos().x + dx;
+//                    int cz = center.getPos().z + dz;
+//
+//                    if (level.hasChunk(cx, cz)) {
+//
+//                        LevelChunk chunk =
+//                                level.getChunk(cx, cz);
+//
+//                        if (!chunks.contains(chunk)) {
+//                            chunks.add(chunk);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return chunks;
+//    }
 
     // СБОР ИСТОЧНИКОВ
     private List<ActiveSource> collectSourcesRaw(ServerLevel level) {
@@ -148,15 +137,15 @@ public class WorldRadiationHandler {
 
         for (ActiveSource s : sources) {
 
-            ChunkPos pos = new ChunkPos(s.chunkX, s.chunkZ);
+            ChunkPos pos = new ChunkPos(s.chunkX(), s.chunkZ());
             List<ActiveSource> list = spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
 
             if(list.isEmpty()){
                 list.add(s);
                 continue;
             }
-            float newRadius = s.radiation.getRadius();
-            float firstRadius = list.get(0).radiation.getRadius();
+            float newRadius = s.radiation().getRadius();
+            float firstRadius = list.get(0).radiation().getRadius();
 
             if (newRadius > firstRadius){
                 list.add(0,s);
@@ -220,14 +209,15 @@ public class WorldRadiationHandler {
 
             for (ActiveSource s : sources) {
 
-                int radius = (int) Math.ceil(s.radiation.getRadius());
+                int radius = (int) Math.ceil(s.radiation().getRadius());
 
+                // добавление чанков с воздействием источников
                 for (int dx = -radius; dx <= radius; dx++) {
                     for (int dz = -radius; dz <= radius; dz++) {
 
                         affectedChunks.add(new ChunkPos(
-                                s.chunkX + dx,
-                                s.chunkZ + dz
+                                s.chunkX() + dx,
+                                s.chunkZ() + dz
                         ));
                     }
                 }
@@ -246,7 +236,7 @@ public class WorldRadiationHandler {
                                         (1f - RadiationConfig.DECAY_RATE)
                         );
 
-                        List<RadiationCalculator.ActiveSource> nearby = new ArrayList<>();
+                        List<ActiveSource> nearby = new ArrayList<>();
 
                         for (int dx = -8; dx <= 8; dx++) {
                             for (int dz = -8; dz <= 8; dz++) {
@@ -258,10 +248,10 @@ public class WorldRadiationHandler {
                                 if (list != null) {
                                     for (ActiveSource src : list) {
 
-                                        nearby.add(new RadiationCalculator.ActiveSource(
-                                                src.chunkX,
-                                                src.chunkZ,
-                                                src.radiation
+                                        nearby.add(new ActiveSource(
+                                                src.chunkX(),
+                                                src.chunkZ(),
+                                                src.radiation()
                                         ));
                                     }
                                 }
@@ -285,6 +275,11 @@ public class WorldRadiationHandler {
 
     // == ЛУЧЕВАЯ БОЛЕЗНЬ ================================================
 
+    //с доки для формулы (IncomingRad * GlobalDoseMultiplier * playerMultiplier)
+    // – (GlobalIllnessDecay + PlayerIllnessDecay)
+    private static final float GLOBAL_DOSE_MULTIPLIER = 0.10f;
+    private static final float GLOBAL_ILLNESS_DECAY = 0.00002f;
+
     private void applyIllnessEffects(ServerLevel level) {
 
         List<LivingEntity> stageDamage1 = new ArrayList<>();
@@ -298,7 +293,9 @@ public class WorldRadiationHandler {
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
                         .ifPresent(chunkRad -> {
 
-                            if (chunkRad.getRadiationLevel() <= 0) return;
+                            //временно (Артём должен переписать)
+                            float incomingRad = chunkRad.getRadiationLevel();
+                            if (incomingRad <= 0f) return;
 
                             float chunkLevel = chunkRad.getRadiationLevel();
 
@@ -310,15 +307,28 @@ public class WorldRadiationHandler {
                                         .getPos().equals(chunk.getPos()))
                                     return;
 
-                                float multiplier = ResistanceRegistry.getDoseMultiplier(entity);
-                                if (multiplier <= 0f) return;
+                                //переменные для нового просчёта поинтов радиации по доке
+                                ResistanceRegistry.ProtectionData protection =
+                                        ResistanceRegistry.getProtectionData(entity);
+
+                                float playerMultiplier = protection.doseMultiplier();
+                                float playerIllnessDecay = protection.illnessDecayBonus();
+
+                                if (playerMultiplier <= 0f) {
+                                    return;
+                                }
 
                                 entity.getCapability(RadiationCapability.RADIATION_ILLNESS)
                                         .ifPresent(illness -> {
 
-                                            illness.addRadiationPoints(
-                                                    chunkLevel * 0.1f * multiplier
-                                            );
+                                            //новая формула для добавления поинтов радиации по доке
+                                            float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier)
+                                                    - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
+                                            if (radiationToAdd < 0f) {
+                                                radiationToAdd = 0f;
+                                            }
+
+                                            illness.addRadiationPoints(radiationToAdd);
 
                                             applyStagePoisons(living, illness.getStage());
 
