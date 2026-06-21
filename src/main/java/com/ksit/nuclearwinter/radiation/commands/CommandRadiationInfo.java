@@ -54,10 +54,19 @@ public class CommandRadiationInfo {
 
         // /radiation illness
         root.then(Commands.literal("illness")
-                .executes(ctx -> {
-                    executeIllness(ctx.getSource());
-                    return 1;
-                })
+                    .executes(ctx -> {
+                       executeIllness(ctx.getSource());
+                        return 1;
+                    })
+        );
+
+        root.then(Commands.literal("illness")
+                .then(Commands.literal("clear")
+                        .executes(ctx -> {
+                            executeIllnessClear(ctx.getSource());
+                            return 1;
+                        })
+                )
         );
 
         // /radiation set entity/block/item <power> <radius> <decay>
@@ -284,6 +293,31 @@ public class CommandRadiationInfo {
         }
     }
 
+    // == /radiation illness clear=====================================================================
+    private static void executeIllnessClear(CommandSourceStack src) {
+        if (!(src.getEntity() instanceof ServerPlayer player)) {
+            src.sendFailure(Component.literal("Только для игроков"));
+            return;
+        }
+
+        var illnessOpt = player.getCapability(RadiationCapability.RADIATION_ILLNESS);
+
+        if (illnessOpt.isPresent()) {
+            IRadiationIllness illness = illnessOpt.orElseThrow(IllegalStateException::new);
+
+            illness.setRadiationPoints(0f);
+
+            msg(src, ChatFormatting.GREEN,
+                    "Лучевая болезнь игрока "
+                            + ChatFormatting.WHITE
+                            + player.getName().getString()
+                            + ChatFormatting.GREEN
+                            + " очищена.");
+        } else {
+            msg(src, ChatFormatting.RED,
+                    "Capability облучения не найдена");
+        }
+    }
     // == /radiation set entity =====================================================================
 
     private static void executeSetEntity(CommandSourceStack src,
