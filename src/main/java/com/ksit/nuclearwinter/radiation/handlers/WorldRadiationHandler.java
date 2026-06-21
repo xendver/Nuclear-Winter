@@ -25,21 +25,26 @@ import java.util.*;
 
 public class WorldRadiationHandler {
     private final Map<ChunkPos, List<ActiveSource>> spatialSources = new HashMap<>();
-    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player){
+
+    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player) {
+        // получаем мир игрока
         ServerLevel level = (ServerLevel) player.level();
-        ChunkMap chunkMap = level.getChunkSource().chunkMap;
 
-        int viewDistance = level.getServer().getPlayerList().getViewDistance();
+        //дальность загрузки чанков
+        int viewDistance = 4;
 
+        //позиция игрока в чанках
         ChunkPos playerChunk = player.chunkPosition();
+        // сюда мы будем складывать чанки без дубликатов
         Set<ChunkPos> loadedChunks = new HashSet<>();
 
+        // перебор области вокруг игрока
         for (int dx = -viewDistance; dx <= viewDistance; dx++) {
             for (int dz = -viewDistance; dz <= viewDistance; dz++) {
+                //смещаемся от игрока и получаем каждый чанк вокруг него
                 ChunkPos chunkPos = new ChunkPos(playerChunk.x + dx, playerChunk.z + dz);
 
-                LevelChunk chunk = level.getChunkSource()
-                        .getChunkNow(chunkPos.x, chunkPos.z);
+                LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
 
                 if (chunk != null) {
                     loadedChunks.add(chunkPos);
@@ -105,9 +110,9 @@ public class WorldRadiationHandler {
 
         List<ActiveSource> sources = new ArrayList<>();
 
-        for (ServerPlayer player : level.players()) {
-            collectPlayerItemSources(player, sources);
-        }
+//        for (ServerPlayer player : level.players()) {
+//            collectPlayerItemSources(player, sources);
+//        }
 
         BlockRadiationStorage storage = BlockRadiationStorage.get(level);
 
@@ -140,17 +145,16 @@ public class WorldRadiationHandler {
             ChunkPos pos = new ChunkPos(s.chunkX(), s.chunkZ());
             List<ActiveSource> list = spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
 
-            if(list.isEmpty()){
+            if (list.isEmpty()) {
                 list.add(s);
                 continue;
             }
             float newRadius = s.radiation().getRadius();
             float firstRadius = list.get(0).radiation().getRadius();
 
-            if (newRadius > firstRadius){
-                list.add(0,s);
-            }
-            else{
+            if (newRadius > firstRadius) {
+                list.add(0, s);
+            } else {
                 list.add(s);
             }
 
@@ -158,9 +162,7 @@ public class WorldRadiationHandler {
     }
 
 
-
-    private void collectPlayerItemSources(Player player,
-                                          List<ActiveSource> sources) {
+    private void collectPlayerItemSources(Player player, List<ActiveSource> sources) {
 
         int cx = level(player).getChunkAt(player.blockPosition()).getPos().x;
         int cz = level(player).getChunkAt(player.blockPosition()).getPos().z;
@@ -175,19 +177,15 @@ public class WorldRadiationHandler {
             checkItem(player.getInventory().getItem(i), cx, cz, sources);
     }
 
-    private void checkItem(ItemStack stack,
-                           int cx,
-                           int cz,
-                           List<ActiveSource> sources) {
+    private void checkItem(ItemStack stack, int cx, int cz, List<ActiveSource> sources) {
 
         if (stack.isEmpty()) return;
 
-        stack.getCapability(RadiationCapability.RADIATION_SOURCE)
-                .ifPresent(rad -> {
-                    if (rad.getInitialPower() > 0) {
-                        sources.add(new ActiveSource(cx, cz, rad));
-                    }
-                });
+        stack.getCapability(RadiationCapability.RADIATION_SOURCE).ifPresent(rad -> {
+            if (rad.getInitialPower() > 0) {
+                sources.add(new ActiveSource(cx, cz, rad));
+            }
+        });
     }
 
     private ServerLevel level(Entity entity) {
@@ -197,78 +195,44 @@ public class WorldRadiationHandler {
     // == ОБНОВЛЕНИЕ РАДИАЦИИ ЧАНКОВ =============================================
 
     private void updateChunkRadiation(ServerLevel level) {
-
+        // Собирает все чанки, на которые влияют источники радиации
         Set<ChunkPos> affectedChunks = new HashSet<>();
 
 
         // берём только чанки с источниками
-        for (ChunkPos sourcePos : spatialSources.keySet()) {
+        //ты проходишь по чанкам, где есть источники радиации
+        for (List<ActiveSource> sources : spatialSources.values()) {
 
-            List<ActiveSource> sources = spatialSources.get(sourcePos);
-            if (sources == null) continue;
+            for (ActiveSource source : sources) {
 
-            for (ActiveSource s : sources) {
-
-                int radius = (int) Math.ceil(s.radiation().getRadius());
+                int radius = (int) Math.ceil(source.radiation().getRadius());
 
                 // добавление чанков с воздействием источников
                 for (int dx = -radius; dx <= radius; dx++) {
                     for (int dz = -radius; dz <= radius; dz++) {
+                        int posX = source.chunkX() + dx;
+                        int posZ = source.chunkZ() + dz;
 
-                        affectedChunks.add(new ChunkPos(
-                                s.chunkX() + dx,
-                                s.chunkZ() + dz
-                        ));
+                        LevelChunk chunk = level.getChunkSource().getChunkNow(posX, posZ);
+                        if (chunk == null) continue;
+
+                        chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(cap -> {
+
+                            cap.setRadiationLevel(cap.getRadiationLevel() * (1f - RadiationConfig.DECAY_RATE));
+
+                            float distanceX = posX - source.chunkX();
+                            float distanceZ = posZ - source.chunkZ();
+                            float d = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+
+                            // Вклад источника: ipower - dpc * distance, не меньше 0
+                            float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * d;
+
+                            cap.setRadiationLevel(newRad);
+                        });
+
                     }
                 }
             }
-        }
-
-        for (ChunkPos pos : affectedChunks) {
-
-            LevelChunk chunk = level.getChunk(pos.x, pos.z);
-
-            chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(cap -> {
-
-                        cap.setRadiationLevel(
-                                cap.getRadiationLevel() *
-                                        (1f - RadiationConfig.DECAY_RATE)
-                        );
-
-                        List<ActiveSource> nearby = new ArrayList<>();
-
-                        for (int dx = -8; dx <= 8; dx++) {
-                            for (int dz = -8; dz <= 8; dz++) {
-
-                                ChunkPos check = new ChunkPos(pos.x + dx, pos.z + dz);
-
-                                List<ActiveSource> list = spatialSources.get(check);
-
-                                if (list != null) {
-                                    for (ActiveSource src : list) {
-
-                                        nearby.add(new ActiveSource(
-                                                src.chunkX(),
-                                                src.chunkZ(),
-                                                src.radiation()
-                                        ));
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!nearby.isEmpty()) {
-
-                            float newRad = RadiationCalculator.calcChunkRadiation(
-                                    pos.x,
-                                    pos.z,
-                                    nearby
-                            );
-
-                            cap.addRadiation(newRad);
-                        }
-                    });
         }
     }
 
@@ -290,56 +254,48 @@ public class WorldRadiationHandler {
 
                 LevelChunk chunk = level.getChunk(pos.x, pos.z);
 
-                chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
-                        .ifPresent(chunkRad -> {
+                chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
-                            //временно (Артём должен переписать)
-                            float incomingRad = chunkRad.getRadiationLevel();
-                            if (incomingRad <= 0f) return;
+                    //временно (Артём должен переписать)
+                    float incomingRad = chunkRad.getRadiationLevel();
+                    if (incomingRad <= 0f) return;
 
-                            float chunkLevel = chunkRad.getRadiationLevel();
+                    float chunkLevel = chunkRad.getRadiationLevel();
 
-                            level.getEntities().getAll().forEach(entity -> {
+                    level.getEntities().getAll().forEach(entity -> {
 
-                                if (!(entity instanceof LivingEntity living)) return;
+                        if (!(entity instanceof LivingEntity living)) return;
 
-                                if (!level.getChunkAt(entity.blockPosition())
-                                        .getPos().equals(chunk.getPos()))
-                                    return;
+                        if (!level.getChunkAt(entity.blockPosition()).getPos().equals(chunk.getPos())) return;
 
-                                //переменные для нового просчёта поинтов радиации по доке
-                                ResistanceRegistry.ProtectionData protection =
-                                        ResistanceRegistry.getProtectionData(entity);
+                        //переменные для нового просчёта поинтов радиации по доке
+                        ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(entity);
 
-                                float playerMultiplier = protection.doseMultiplier();
-                                float playerIllnessDecay = protection.illnessDecayBonus();
+                        float playerMultiplier = protection.doseMultiplier();
+                        float playerIllnessDecay = protection.illnessDecayBonus();
 
-                                if (playerMultiplier <= 0f) {
-                                    return;
-                                }
+                        if (playerMultiplier <= 0f) {
+                            return;
+                        }
 
-                                entity.getCapability(RadiationCapability.RADIATION_ILLNESS)
-                                        .ifPresent(illness -> {
+                        entity.getCapability(RadiationCapability.RADIATION_ILLNESS).ifPresent(illness -> {
 
-                                            //новая формула для добавления поинтов радиации по доке
-                                            float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier)
-                                                    - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
-                                            if (radiationToAdd < 0f) {
-                                                radiationToAdd = 0f;
-                                            }
+                            //новая формула для добавления поинтов радиации по доке
+                            float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier) - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
+                            if (radiationToAdd < 0f) {
+                                radiationToAdd = 0f;
+                            }
 
-                                            illness.addRadiationPoints(radiationToAdd);
+                            illness.addRadiationPoints(radiationToAdd);
 
-                                            applyStagePoisons(living, illness.getStage());
+                            applyStagePoisons(living, illness.getStage());
 
-                                            if (illness.getStage() == IllnessStage.STAGE_3)
-                                                stageDamage1.add(living);
+                            if (illness.getStage() == IllnessStage.STAGE_3) stageDamage1.add(living);
 
-                                            if (illness.getStage() == IllnessStage.STAGE_4)
-                                                stageDamage3.add(living);
-                                        });
-                            });
+                            if (illness.getStage() == IllnessStage.STAGE_4) stageDamage3.add(living);
                         });
+                    });
+                });
             }
         }
 
@@ -349,101 +305,63 @@ public class WorldRadiationHandler {
 
     // == ЭФФЕКТЫ ===========================================================
 
-    private void applyStagePoisons(LivingEntity entity,
-                                   IllnessStage stage) {
+    private void applyStagePoisons(LivingEntity entity, IllnessStage stage) {
 
         final int D = 600;
 
         switch (stage) {
 
-            case NONE -> {}
+            case NONE -> {
+            }
 
             case STAGE_1 -> {
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.MOVEMENT_SLOWDOWN,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.WEAKNESS,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.CONFUSION,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 0, false, false));
             }
 
             case STAGE_2 -> {
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.MOVEMENT_SLOWDOWN,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.WEAKNESS,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.CONFUSION,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.HUNGER,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.DIG_SLOWDOWN,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, D, 1, false, false));
             }
 
             case STAGE_3 -> {
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.MOVEMENT_SLOWDOWN,
-                        D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.WEAKNESS,
-                        D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.CONFUSION,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.HUNGER,
-                        D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.BLINDNESS,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, D, 0, false, false));
             }
 
             case STAGE_4 -> {
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.MOVEMENT_SLOWDOWN,
-                        D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.WEAKNESS,
-                        D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.CONFUSION,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.HUNGER,
-                        D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.BLINDNESS,
-                        D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, D, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(
-                        MobEffects.WITHER,
-                        D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, D, 1, false, false));
             }
         }
     }
@@ -454,20 +372,13 @@ public class WorldRadiationHandler {
 
         for (ServerPlayer player : level.players()) {
 
-            LevelChunk chunk =
-                    level.getChunkAt(player.blockPosition());
+            LevelChunk chunk = level.getChunkAt(player.blockPosition());
 
-            chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(cap ->
+            chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(cap ->
 
-                            PacketHandler.INSTANCE.send(
-                                    net.minecraftforge.network.PacketDistributor.PLAYER.with(
-                                            () -> player),
+                    PacketHandler.INSTANCE.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player),
 
-                                    new PacketChunkRadiation(
-                                            cap.getRadiationLevel())
-                            )
-                    );
+                            new PacketChunkRadiation(cap.getRadiationLevel())));
         }
     }
 }
