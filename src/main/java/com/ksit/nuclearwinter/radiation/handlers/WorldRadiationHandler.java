@@ -25,7 +25,7 @@ import java.util.*;
 
 public class WorldRadiationHandler {
     private final Map<ChunkPos, List<ActiveSource>> spatialSources = new HashMap<>();
-    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player){
+    public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player) {
         ServerLevel level = (ServerLevel) player.level();
         ChunkMap chunkMap = level.getChunkSource().chunkMap;
 
