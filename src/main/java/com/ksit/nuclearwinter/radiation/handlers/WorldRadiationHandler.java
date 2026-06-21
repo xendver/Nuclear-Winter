@@ -123,10 +123,7 @@ public class WorldRadiationHandler {
 
             ChunkPos cpos = new ChunkPos(pos);
 
-            RadiationImpl rad = new RadiationImpl();
-            rad.setInitialPower(values[0]);
-            rad.setRadius(values[1]);
-            rad.setDecayPerChunk(values[2]);
+            RadiationImpl rad = new RadiationImpl(values[0], values[1], values[2]);
 
             sources.add(new ActiveSource(cpos.x, cpos.z, rad));
         }
@@ -136,28 +133,13 @@ public class WorldRadiationHandler {
 
     private void rebuildSpatialIndex(ServerLevel level) {
 
-        spatialSources.clear();
+        this.spatialSources.clear();
 
-        List<ActiveSource> sources = collectSourcesRaw(level);
+        for (ActiveSource source : collectSourcesRaw(level)) {
 
-        for (ActiveSource s : sources) {
-
-            ChunkPos pos = new ChunkPos(s.chunkX(), s.chunkZ());
-            List<ActiveSource> list = spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
-
-            if (list.isEmpty()) {
-                list.add(s);
-                continue;
-            }
-            float newRadius = s.radiation().getRadius();
-            float firstRadius = list.get(0).radiation().getRadius();
-
-            if (newRadius > firstRadius) {
-                list.add(0, s);
-            } else {
-                list.add(s);
-            }
-
+            ChunkPos pos = new ChunkPos(source.chunkX(), source.chunkZ());
+            List<ActiveSource> list = this.spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
+            list.add(source);
         }
     }
 
@@ -195,13 +177,9 @@ public class WorldRadiationHandler {
     // == ОБНОВЛЕНИЕ РАДИАЦИИ ЧАНКОВ =============================================
 
     private void updateChunkRadiation(ServerLevel level) {
-        // Собирает все чанки, на которые влияют источники радиации
-        Set<ChunkPos> affectedChunks = new HashSet<>();
-
-
         // берём только чанки с источниками
         //ты проходишь по чанкам, где есть источники радиации
-        for (List<ActiveSource> sources : spatialSources.values()) {
+        for (List<ActiveSource> sources : this.spatialSources.values()) {
 
             for (ActiveSource source : sources) {
 
@@ -222,12 +200,17 @@ public class WorldRadiationHandler {
 
                             float distanceX = posX - source.chunkX();
                             float distanceZ = posZ - source.chunkZ();
-                            float d = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+                            float distance = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
 
                             // Вклад источника: ipower - dpc * distance, не меньше 0
-                            float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * d;
+                            float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * distance;
 
-                            cap.setRadiationLevel(newRad);
+                            // во время тестов
+                            if (newRad > cap.getRadiationLevel()) {
+                                cap.setRadiationLevel(newRad);
+                            }
+                            // cap.addRadiation(newRad);
+
                         });
 
                     }
