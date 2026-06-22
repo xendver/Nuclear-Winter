@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": {
+      "item": "nuclearwinter:lead_plate"
+    },
+    "C": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "H": {
+      "item": "nuclearwinter:hermetic_gasket"
+    }
+  },
+  "pattern": [
+    "CHC",
+    "P P",
+    "C C"
+  ],
+  "result": {
+    "item": "nuclearwinter:hazmat_armor_leggings"
+  },
+  "show_notification": true
+}

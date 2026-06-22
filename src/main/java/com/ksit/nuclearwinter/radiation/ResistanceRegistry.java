@@ -5,25 +5,16 @@ import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
 import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
 // Классы энтити, которые устойчивы к радиации (в будущем)
 public final class ResistanceRegistry {
 
     private ResistanceRegistry() {}
-
-    // Энитити, которые полностью устойчивы к радиации
-    private static final Set<Class<? extends Entity>> IMMUNE = new HashSet<>();
-
-    // Энтити с частичной устойчивостью: класс -> множитель (0.0 - 1.0)
-    // 0.0 = полный иммунитет, 1.0 = нет устойчивости, 0.5 = получает 50% дозы
-    private static final Map<Class<? extends Entity>, Float>  PARTIAL = new HashMap<>();
 
     public static final class ProtectionData{
         private final float doseMultiplier;
@@ -43,50 +34,64 @@ public final class ResistanceRegistry {
         }
     }
 
-    // Регистрация полного иммунитета к радиации
-    public static void registerImmune(Class<? extends Entity> entityClass) {
-        IMMUNE.add(entityClass);
-    }
+    // Энтити с частичной устойчивостью: класс -> множитель (0.0 - 1.0)
+    // 0.0 = полный иммунитет, 1.0 = нет устойчивости, 0.5 = получает 50% дозы
+    private static final Map<Class<? extends Entity>, ProtectionData> entityProtection = new HashMap<>();
+    public static final ProtectionData NO_PROTECTION = new ProtectionData(1.0f, 0.0f);
+    public static final ProtectionData FULL_IMMUNITY = new ProtectionData(0.0f, 0.0f);
 
     // Регистрация частичной устойчивости
     // multiplier: 0.0 = иммунитет, 1.0 = без защиты, 0.5 = половина дозы
     public static void registerPartial(Class<? extends Entity> entityClass,
-                                       float multiplier) {
-        PARTIAL.put(entityClass, Math.max(0f, Math.min(1f, multiplier)));
+                                      float multiplier) {
+        entityProtection.put(entityClass, new ProtectionData(additional(multiplier), 0.0f));
     }
 
-    public static final ProtectionData NO_PROTECTION = new ProtectionData(1.0f, 0.0f);
-    public static final ProtectionData FULL_IMMUNITY = new ProtectionData(0.0f, 0.0f);
+    // Регистрация полной устойчивости
+    public static void registerImmune(Class<? extends Entity> entityClass) {
+        entityProtection.put(entityClass, FULL_IMMUNITY);
+    }
+
+
+    public static void registerProtection(Class<? extends Entity> entityClass,
+                                          float doseMultiplier, float illnessDecayBonus){
+        entityProtection.put(entityClass,
+                new ProtectionData(additional(doseMultiplier),
+                        Math.max(0f, illnessDecayBonus)));
+
+    }
+
+
+
+
 
     public static ProtectionData getProtectionData(Entity entity) {
 
-        // Полный иммунитет сущности
-        for (Class<? extends Entity> entityClass : IMMUNE) {
-            if (entityClass.isInstance(entity)) {
-                return FULL_IMMUNITY;
-            }
-        }
-
-        // Частичная устойчивость сущности
-        for (Map.Entry<Class<? extends Entity>, Float> entry : PARTIAL.entrySet()) {
-            if (entry.getKey().isInstance(entity)) {
-                return new ProtectionData(entry.getValue(), 0.0f);
-            }
-        }
-
-        // Броня игрока
+        // проверка брони на игроке
         if (entity instanceof Player player) {
-            return getPlayerArmorProtection(player);
+            ProtectionData armorProtection = getPlayerArmorProtection(player);
+            if (armorProtection != NO_PROTECTION) return armorProtection;
+        }
+
+        // проверка на зарегистрированную защиту по классу сущности
+        for (Map.Entry<Class<? extends Entity>, ProtectionData> entry : entityProtection.entrySet()){
+            if (entry.getKey().isInstance(entity)){
+                return entry.getValue();
+            }
         }
 
         return NO_PROTECTION;
     }
 
 
+
     // МНОЖИТЕЛЬ ДОЗЫ ДЛЯ ЭНТИТИ
     // Возвращает 0 если есть иммунитет, от 0 до 1 если частично есть, 1 если нет устойчивости
     public static float getDoseMultiplier(Entity entity) {
         return getProtectionData(entity).doseMultiplier();
+    }
+    public static float getIllnessDecayBonus(Entity entity) {
+        return getProtectionData(entity).illnessDecayBonus;
     }
 
     public static boolean isImmune(Entity entity) {
@@ -132,6 +137,10 @@ public final class ResistanceRegistry {
 
         return armorPieces == 4;
     }
+
+
+    private static float additional(float value) {return Math.max(0f, Math.min(1f, value));}
+
 
 
 }

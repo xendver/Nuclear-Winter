@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "F": {
+      "item": "nuclearwinter:filter"
+    },
+    "I": {
+      "item": "nuclearwinter::lead_ingot"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "G G",
+    "FIF"
+  ],
+  "result": {
+    "item": "nuclearwinter:mopp_armor_helmet"
+  },
+  "show_notification": true
+}

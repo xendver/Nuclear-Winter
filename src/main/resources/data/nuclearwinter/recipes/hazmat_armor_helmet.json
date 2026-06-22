@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "H": {
+      "item": "nuclearwinter:hermetic_gasket"
+    },
+    "F": {
+      "item": "nuclearwinter:filter"
+    }
+  },
+  "pattern": [
+    "ССС",
+    "GGG",
+    "FHF"
+  ],
+  "result": {
+    "item": "nuclearwinter:hazmat_armor_helmet"
+  },
+  "show_notification": true
+}

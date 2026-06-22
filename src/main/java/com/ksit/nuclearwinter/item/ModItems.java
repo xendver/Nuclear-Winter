@@ -5,6 +5,7 @@ import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
 import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
+import com.ksit.nuclearwinter.item.custom.ItemGeigerCounter;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
@@ -69,10 +70,58 @@ public class ModItems {
                     )
             );
 
+    public static final RegistryObject<Item> FILTER =
+            ITEMS.register(
+                    "filter",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> RADIO_ABSORBING_COMPOSITE =
+            ITEMS.register(
+                    "radio_absorbing_composite",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> HERMETIC_GASKET =
+            ITEMS.register(
+                    "hermetic_gasket",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> URANIUM_STEEL =
+            ITEMS.register(
+                    "uranium_steel",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> NUCLEAR_FILTER =
+            ITEMS.register(
+                    "nuclear_filter",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
+    public static final RegistryObject<Item> MICROREACTOR =
+            ITEMS.register(
+                    "microreactor",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
     // Функциональные предметы
     //Счётчик Гейгера
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter",
-            () -> new ItemGeigerCounter(new Item.Properties()));
+            () -> new ItemGeigerCounter(new Item.Properties().stacksTo(1)));
 
     // Броня
     //tier 1
