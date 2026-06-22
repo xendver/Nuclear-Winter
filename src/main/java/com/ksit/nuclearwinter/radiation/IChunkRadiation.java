@@ -6,11 +6,15 @@ import net.minecraft.nbt.CompoundTag;
 // Прикрепляется через Capability к каждому чанку мира
 public interface IChunkRadiation {
 
-    float getRadiationLevel();
-    void  setRadiationLevel(float level);
+    float getRadiationPollutionLevel();
+    void setRadiationPollutionLevel(float level);
 
     // Добавление радиации; amount может быть отрицательным
-    void  addRadiation(float amount);
+    void addRadiationPollution(float amount);
+
+    public float getRadiationActivityLevel();
+    public void setRadiationActivityLevel(float level);
+    public void addRadiationActivity(float amount);
 
     CompoundTag serializeNBT();
     void        deserializeNBT(CompoundTag nbt);

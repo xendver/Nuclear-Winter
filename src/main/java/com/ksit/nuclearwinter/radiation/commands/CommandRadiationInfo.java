@@ -174,7 +174,7 @@ public class CommandRadiationInfo {
             msg(src, ChatFormatting.YELLOW,
                     "radiationLevel: "
                             + ChatFormatting.WHITE
-                            + cap.getRadiationLevel());
+                            + cap.getRadiationPollutionLevel());
         } else {
             msg(src, ChatFormatting.RED, "Capability не найдена");
         }

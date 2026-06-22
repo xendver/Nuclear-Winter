@@ -5,35 +5,50 @@ import net.minecraft.nbt.CompoundTag;
 // IChunkRadiation, хранение уровня радиации одного чанка
 public class ChunkRadiationImpl implements IChunkRadiation {
 
-    private float radiationLevel = 0f;
+    private float radiationPollutionLevel = 0f;
+    private float radiationActivityLevel = 0f;
 
     @Override
-    public float getRadiationLevel() {
-        return radiationLevel;
+    public float getRadiationPollutionLevel() {
+        return radiationPollutionLevel;
     }
 
     @Override
-    public void setRadiationLevel(float level) {
+    public void setRadiationPollutionLevel(float level) {
         // Чтобы уровень не ушёл в минус
-        this.radiationLevel = Math.max(0f, level);
+        this.radiationPollutionLevel = Math.max(0f, level);
     }
 
     @Override
-    public void addRadiation(float amount) {
+    public void addRadiationPollution(float amount) {
         // amount может быть отрицательным
         // Math.max(0, ...) не даёт уровню уйти ниже нуля
-        this.radiationLevel = Math.max(0f, this.radiationLevel + amount);
+        this.radiationPollutionLevel = Math.max(0f, this.radiationPollutionLevel + amount);
+    }
+
+    @Override
+    public float getRadiationActivityLevel() { return radiationActivityLevel; }
+
+    @Override
+    public void setRadiationActivityLevel(float level) {
+        // Чтобы уровень не ушёл в минус
+        this.radiationActivityLevel = Math.max(0f, level);
+    }
+
+    @Override
+    public void addRadiationActivity(float amount){
+        this.radiationActivityLevel = Math.max(0f, this.radiationActivityLevel + amount);
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat("radiation", radiationLevel);
+        tag.putFloat("radiationPollution", radiationPollutionLevel);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.radiationLevel = nbt.getFloat("radiation");
+        this.radiationPollutionLevel = nbt.getFloat("radiationPollution");
     }
 }

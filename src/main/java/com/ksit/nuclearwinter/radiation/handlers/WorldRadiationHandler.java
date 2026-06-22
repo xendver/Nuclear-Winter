@@ -5,7 +5,6 @@ import com.ksit.nuclearwinter.network.PacketHandler;
 import com.ksit.nuclearwinter.radiation.*;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -195,47 +194,105 @@ public class WorldRadiationHandler {
     // == ОБНОВЛЕНИЕ РАДИАЦИИ ЧАНКОВ =============================================
 
     private void updateChunkRadiation(ServerLevel level) {
-        // Собирает все чанки, на которые влияют источники радиации
-        Set<ChunkPos> affectedChunks = new HashSet<>();
 
+        // Ключ = ChunkPos.asLong(x, z)
+        // Значение = суммарная активность чанка за этот тик
+        Map<Long, Float> chunkActivities = new HashMap<>();
 
-        // берём только чанки с источниками
-        //ты проходишь по чанкам, где есть источники радиации
+        /*
+         * ==========================================
+         * ПЕРВЫЙ ПРОХОД
+         * Собираем сумму вкладов всех источников
+         * ==========================================
+         */
+
         for (List<ActiveSource> sources : spatialSources.values()) {
 
             for (ActiveSource source : sources) {
 
                 int radius = (int) Math.ceil(source.radiation().getRadius());
 
-                // добавление чанков с воздействием источников
                 for (int dx = -radius; dx <= radius; dx++) {
                     for (int dz = -radius; dz <= radius; dz++) {
-                        int posX = source.chunkX() + dx;
-                        int posZ = source.chunkZ() + dz;
 
-                        LevelChunk chunk = level.getChunkSource().getChunkNow(posX, posZ);
-                        if (chunk == null) continue;
+                        int chunkX = source.chunkX() + dx;
+                        int chunkZ = source.chunkZ() + dz;
 
-                        chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(cap -> {
+                        LevelChunk chunk = level.getChunkSource().getChunkNow(chunkX, chunkZ);
 
-                            cap.setRadiationLevel(cap.getRadiationLevel() * (1f - RadiationConfig.DECAY_RATE));
+                        if (chunk == null)
+                            continue;
 
-                            float distanceX = posX - source.chunkX();
-                            float distanceZ = posZ - source.chunkZ();
-                            float d = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+                        float distance = (float) Math.sqrt(dx * dx + dz * dz);
 
-                            // Вклад источника: ipower - dpc * distance, не меньше 0
-                            float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * d;
+                        float contribution = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * distance;
 
-                            cap.setRadiationLevel(newRad);
-                        });
+                        if (contribution <= 0)
+                            continue;
 
+                        long key = ChunkPos.asLong(chunkX, chunkZ);
+
+                        chunkActivities.merge(
+                                key,
+                                contribution,
+                                Float::sum
+                        );
                     }
                 }
             }
         }
-    }
 
+        /*
+         * ==========================================
+         * ВТОРОЙ ПРОХОД
+         * Записываем activity и pollution в capability
+         * ==========================================
+         */
+
+        for (Map.Entry<Long, Float> entry: chunkActivities.entrySet()) {
+
+            ChunkPos pos = new ChunkPos(entry.getKey());
+
+            LevelChunk chunk = level.getChunkSource().getChunkNow(pos.x, pos.z);
+
+            if (chunk == null)
+                continue;
+
+            float activity = entry.getValue();
+
+            /*
+             * ACTIVITY
+             * Всегда хранит сумму вкладов
+             * за текущий тик.
+             */
+
+            chunk.getCapability(
+                            RadiationCapability.CHUNK_RADIATION)
+                    .ifPresent(cap ->
+                            cap.setRadiationActivityLevel(
+                                    activity
+                            ));
+
+            /*
+             * POLLUTION
+             * Накопленная радиация.
+             */
+
+            chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
+                    .ifPresent(cap -> {
+
+                        float pollution = cap.getRadiationPollutionLevel();
+
+                        pollution *= (1f - RadiationConfig.DECAY_RATE);
+
+                        pollution += activity;
+
+                        cap.setRadiationPollutionLevel(
+                                pollution
+                        );
+                    });
+        }
+    }
 
     // == ЛУЧЕВАЯ БОЛЕЗНЬ ================================================
 
@@ -257,10 +314,10 @@ public class WorldRadiationHandler {
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
                     //временно (Артём должен переписать)
-                    float incomingRad = chunkRad.getRadiationLevel();
+                    float incomingRad = chunkRad.getRadiationPollutionLevel();
                     if (incomingRad <= 0f) return;
 
-                    float chunkLevel = chunkRad.getRadiationLevel();
+                    float chunkLevel = chunkRad.getRadiationPollutionLevel();
 
                     level.getEntities().getAll().forEach(entity -> {
 
@@ -378,7 +435,7 @@ public class WorldRadiationHandler {
 
                     PacketHandler.INSTANCE.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player),
 
-                            new PacketChunkRadiation(cap.getRadiationLevel())));
+                            new PacketChunkRadiation(cap.getRadiationActivityLevel())));
         }
     }
 }

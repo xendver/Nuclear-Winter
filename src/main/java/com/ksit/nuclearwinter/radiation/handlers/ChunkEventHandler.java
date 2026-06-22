@@ -2,7 +2,6 @@ package com.ksit.nuclearwinter.radiation.handlers;
 
 import com.ksit.nuclearwinter.NuclearWinter;
 import com.ksit.nuclearwinter.radiation.ChunkRadiationProvider;
-import com.ksit.nuclearwinter.radiation.IChunkRadiation;
 import com.ksit.nuclearwinter.radiation.RadiationCapability;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -21,7 +20,7 @@ public class ChunkEventHandler {
     @SubscribeEvent
     public void onAttachChunkCapabilities(AttachCapabilitiesEvent<LevelChunk> event) {
         if (!event.getObject().getCapability(
-                RadiationCapability.CHUNK_RADIATION).isPresent()) {
+                RadiationCapability.CHUNK_RADIATION).isPresent()){
             event.addCapability(CAP_KEY, new ChunkRadiationProvider());
         }
     }
