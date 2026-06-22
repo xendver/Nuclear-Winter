@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.item;
+package com.ksit.nuclearwinter.item.custom;
 
 import com.ksit.nuclearwinter.client.renderer.ItemGeigerRenderer;
 import com.ksit.nuclearwinter.radiation.ItemRadiationProvider;

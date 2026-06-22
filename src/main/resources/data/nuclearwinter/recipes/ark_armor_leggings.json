@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "С": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "S": {
+      "item": "nuclearwinter:uranium_steel"
+    },
+    "H": {
+      "item": "nuclearwinter:hermetic_gasket"
+    }
+  },
+  "pattern": [
+    "SHS",
+    "C C",
+    "S S"
+  ],
+  "result": {
+    "item": "nuclearwinter:ark_armor_leggings"
+  },
+  "show_notification": true
+}

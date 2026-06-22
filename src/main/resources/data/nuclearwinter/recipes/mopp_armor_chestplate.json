@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "nuclearwinter::lead_ingot"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "L L",
+    "ILI",
+    "III"
+  ],
+  "result": {
+    "item": "nuclearwinter:mopp_armor_chestplate"
+  },
+  "show_notification": true
+}
