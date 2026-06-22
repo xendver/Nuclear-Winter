@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "С": {
+    "C": {
       "item": "nuclearwinter:radio_absorbing_composite"
     },
     "H": {

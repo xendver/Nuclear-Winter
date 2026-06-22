@@ -121,7 +121,7 @@ public class ModItems {
     // Функциональные предметы
     //Счётчик Гейгера
     public static final RegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.register("geiger_counter",
-            () -> new ItemGeigerCounter(new Item.Properties()));
+            () -> new ItemGeigerCounter(new Item.Properties().stacksTo(1)));
 
     // Броня
     //tier 1
