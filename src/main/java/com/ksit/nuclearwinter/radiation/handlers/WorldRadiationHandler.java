@@ -2,15 +2,17 @@ package com.ksit.nuclearwinter.radiation.handlers;
 
 import com.ksit.nuclearwinter.network.PacketChunkRadiation;
 import com.ksit.nuclearwinter.network.PacketHandler;
-import com.ksit.nuclearwinter.radiation.*;
+import com.ksit.nuclearwinter.radiation.ActiveSource;
+import com.ksit.nuclearwinter.radiation.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.RadiationConfig;
+import com.ksit.nuclearwinter.radiation.RadiationSourceManager;
+import com.ksit.nuclearwinter.radiation.ResistanceRegistry;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ChunkMap;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -18,14 +20,33 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import com.ksit.nuclearwinter.radiation.ActiveSource;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class WorldRadiationHandler {
-    private final Map<ChunkPos, List<ActiveSource>> spatialSources = new HashMap<>();
 
+    // главный кэш/менеджер всех активных источников радиации мира
+    private final RadiationSourceManager sourceManager = new RadiationSourceManager();
+
+    // == TICK =============================================
+    @SubscribeEvent
+    public void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        if (event.level.isClientSide()) return;
+        if (event.level.getGameTime() % 20 != 0) return; // раз в секунду
+
+        ServerLevel level = (ServerLevel) event.level;
+
+        sourceManager.rebuildFromStorage(level);
+        updateChunkRadiation(level);
+        applyIllnessEffects(level);
+        sendRadiationPackets(level);
+    }
+
+    // == ЧАНКИ, ЗАГРУЖЕННЫЕ ВОКРУГ ИГРОКА =============================================
     public static Set<ChunkPos> getLoadedChunksForPlayer(ServerPlayer player) {
         // получаем мир игрока
         ServerLevel level = (ServerLevel) player.level();
@@ -55,174 +76,149 @@ public class WorldRadiationHandler {
         return loadedChunks;
     }
 
-    @SubscribeEvent
-    public void onLevelTick(TickEvent.LevelTickEvent event) {
-
-        if (event.phase != TickEvent.Phase.END) return;
-        if (event.level.isClientSide()) return;
-        if (event.level.getGameTime() % 20 != 0) return;
-
-        ServerLevel level = (ServerLevel) event.level;
-
-        rebuildSpatialIndex(level);
-        updateChunkRadiation(level);
-        applyIllnessEffects(level);
-        sendRadiationPackets(level);
-    }
-
     // =========================================================================================
 
-//    private List<LevelChunk> getLoadedChunks(ServerLevel level) {
-//
-//        List<LevelChunk> chunks = new ArrayList<>();
-//
-//        for (ServerPlayer player : level.players()) {
-//
-//            LevelChunk center =
-//                    level.getChunkAt(player.blockPosition());
-//
-//            int radius = 8;
-//
-//            for (int dx = -radius; dx <= radius; dx++) {
-//                for (int dz = -radius; dz <= radius; dz++) {
-//
-//                    int cx = center.getPos().x + dx;
-//                    int cz = center.getPos().z + dz;
-//
-//                    if (level.hasChunk(cx, cz)) {
-//
-//                        LevelChunk chunk =
-//                                level.getChunk(cx, cz);
-//
-//                        if (!chunks.contains(chunk)) {
-//                            chunks.add(chunk);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return chunks;
-//    }
+    //    private List<LevelChunk> getLoadedChunks(ServerLevel level) {
+    //
+    //        List<LevelChunk> chunks = new ArrayList<>();
+    //
+    //        for (ServerPlayer player : level.players()) {
+    //
+    //            LevelChunk center =
+    //                    level.getChunkAt(player.blockPosition());
+    //
+    //            int radius = 8;
+    //
+    //            for (int dx = -radius; dx <= radius; dx++) {
+    //                for (int dz = -radius; dz <= radius; dz++) {
+    //
+    //                    int cx = center.getPos().x + dx;
+    //                    int cz = center.getPos().z + dz;
+    //
+    //                    if (level.hasChunk(cx, cz)) {
+    //
+    //                        LevelChunk chunk =
+    //                                level.getChunk(cx, cz);
+    //
+    //                        if (!chunks.contains(chunk)) {
+    //                            chunks.add(chunk);
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //
+    //        return chunks;
+    //    }
 
     // СБОР ИСТОЧНИКОВ
-    private List<ActiveSource> collectSourcesRaw(ServerLevel level) {
-
-        List<ActiveSource> sources = new ArrayList<>();
-
-//        for (ServerPlayer player : level.players()) {
-//            collectPlayerItemSources(player, sources);
-//        }
-
-        BlockRadiationStorage storage = BlockRadiationStorage.get(level);
-
-        for (Map.Entry<BlockPos, float[]> entry : storage.getAll().entrySet()) {
-
-            BlockPos pos = entry.getKey();
-            float[] values = entry.getValue();
-
-            ChunkPos cpos = new ChunkPos(pos);
-
-            RadiationImpl rad = new RadiationImpl(values[0], values[1], values[2]);
-
-            sources.add(new ActiveSource(cpos.x, cpos.z, rad));
-        }
-
-        return sources;
-    }
-
-    private void rebuildSpatialIndex(ServerLevel level) {
-
-        this.spatialSources.clear();
-
-        for (ActiveSource source : collectSourcesRaw(level)) {
-
-            ChunkPos pos = new ChunkPos(source.chunkX(), source.chunkZ());
-            List<ActiveSource> list = this.spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
-            list.add(source);
-        }
-    }
-
-
-    private void collectPlayerItemSources(Player player, List<ActiveSource> sources) {
-
-        int cx = level(player).getChunkAt(player.blockPosition()).getPos().x;
-        int cz = level(player).getChunkAt(player.blockPosition()).getPos().z;
-
-        checkItem(player.getMainHandItem(), cx, cz, sources);
-        checkItem(player.getOffhandItem(), cx, cz, sources);
-
-        for (ItemStack armor : player.getArmorSlots())
-            checkItem(armor, cx, cz, sources);
-
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++)
-            checkItem(player.getInventory().getItem(i), cx, cz, sources);
-    }
-
-    private void checkItem(ItemStack stack, int cx, int cz, List<ActiveSource> sources) {
-
-        if (stack.isEmpty()) return;
-
-        stack.getCapability(RadiationCapability.RADIATION_SOURCE).ifPresent(rad -> {
-            if (rad.getInitialPower() > 0) {
-                sources.add(new ActiveSource(cx, cz, rad));
-            }
-        });
-    }
-
-    private ServerLevel level(Entity entity) {
-        return (ServerLevel) entity.level();
-    }
+    //    private List<ActiveSource> collectSourcesRaw(ServerLevel level) {
+    //
+    //        List<ActiveSource> sources = new ArrayList<>();
+    //
+    //       for (ServerPlayer player : level.players()) {
+    //            collectPlayerItemSources(player, sources);
+    //       }
+    //
+    //        BlockRadiationStorage storage = BlockRadiationStorage.get(level);
+    //
+    //        for (Map.Entry<BlockPos, float[]> entry : storage.getAll().entrySet()) {
+    //
+    //            BlockPos pos = entry.getKey();
+    //            float[] values = entry.getValue();
+    //
+    //            ChunkPos cpos = new ChunkPos(pos);
+    //
+    //            RadiationImpl rad = new RadiationImpl(values[0], values[1], values[2]);
+    //
+    //            sources.add(new ActiveSource(cpos.x, cpos.z, rad));
+    //        }
+    //
+    //        return sources;
+    //    }
+    //
+    //    private void rebuildSpatialIndex(ServerLevel level) {
+    //
+    //        this.spatialSources.clear();
+    //
+    //        for (ActiveSource source : collectSourcesRaw(level)) {
+    //
+    //            ChunkPos pos = new ChunkPos(source.chunkX(), source.chunkZ());
+    //            List<ActiveSource> list = this.spatialSources.computeIfAbsent(pos, k -> new ArrayList<>());
+    //            list.add(source);
+    //        }
+    //    }
+    //    private void collectPlayerItemSources(Player player, List<ActiveSource> sources) {
+    //
+    //        int cx = level(player).getChunkAt(player.blockPosition()).getPos().x;
+    //        int cz = level(player).getChunkAt(player.blockPosition()).getPos().z;
+    //
+    //        checkItem(player.getMainHandItem(), cx, cz, sources);
+    //        checkItem(player.getOffhandItem(), cx, cz, sources);
+    //
+    //        for (ItemStack armor : player.getArmorSlots())
+    //            checkItem(armor, cx, cz, sources);
+    //
+    //        for (int i = 0; i < player.getInventory().getContainerSize(); i++)
+    //            checkItem(player.getInventory().getItem(i), cx, cz, sources);
+    //    }
+    //
+    //    private void checkItem(ItemStack stack, int cx, int cz, List<ActiveSource> sources) {
+    //
+    //        if (stack.isEmpty()) return;
+    //
+    //        stack.getCapability(RadiationCapability.RADIATION_SOURCE).ifPresent(rad -> {
+    //            if (rad.getInitialPower() > 0) {
+    //                sources.add(new ActiveSource(cx, cz, rad));
+    //            }
+    //        });
+    //    }
 
     // == ОБНОВЛЕНИЕ РАДИАЦИИ ЧАНКОВ =============================================
-
     private void updateChunkRadiation(ServerLevel level) {
         // берём только чанки с источниками
         //ты проходишь по чанкам, где есть источники радиации
-        for (List<ActiveSource> sources : this.spatialSources.values()) {
+        for (ActiveSource source : sourceManager.getAllSources()) {
 
-            for (ActiveSource source : sources) {
+            int sourceChunkX = source.chunkX();
+            int sourceChunkZ = source.chunkZ();
 
-                int radius = (int) Math.ceil(source.radiation().getRadius());
+            float radius = source.radiation().getRadius();
+            int chunkRadius = (int) Math.ceil(radius);
 
-                // добавление чанков с воздействием источников
-                for (int dx = -radius; dx <= radius; dx++) {
-                    for (int dz = -radius; dz <= radius; dz++) {
-                        int posX = source.chunkX() + dx;
-                        int posZ = source.chunkZ() + dz;
+            // добавление чанков с воздействием источников
+            for (int dx = -chunkRadius; dx <= chunkRadius; dx++) {
+                for (int dz = -chunkRadius; dz <= chunkRadius; dz++) {
+                    int targetChunkX = sourceChunkX + dx;
+                    int targetChunkZ = sourceChunkZ + dz;
 
-                        LevelChunk chunk = level.getChunkSource().getChunkNow(posX, posZ);
-                        if (chunk == null) continue;
+                    LevelChunk chunk = level.getChunkSource().getChunkNow(targetChunkX, targetChunkZ);
+                    if (chunk == null) continue;
 
-                        chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(cap -> {
 
-                            cap.setRadiationLevel(cap.getRadiationLevel() * (1f - RadiationConfig.DECAY_RATE));
+                    chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(cap -> {
 
-                            float distanceX = posX - source.chunkX();
-                            float distanceZ = posZ - source.chunkZ();
-                            float distance = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+                        cap.setRadiationLevel(cap.getRadiationLevel() * (1f - RadiationConfig.DECAY_RATE));
 
-                            // Вклад источника: ipower - dpc * distance, не меньше 0
-                            float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * distance;
+                        float distanceX = targetChunkX - sourceChunkX;
+                        float distanceZ = targetChunkZ - sourceChunkZ;
+                        float distance = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
 
-                            // во время тестов
-                            if (newRad > cap.getRadiationLevel()) {
-                                cap.setRadiationLevel(newRad);
-                            }
-                            // cap.addRadiation(newRad);
+                        // Вклад источника: ipower - dpc * distance, не меньше 0
+                        float newRad = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * distance;
 
-                        });
-
-                    }
+                        // Переписанная новая логика с суммированием
+                        if (newRad > 0f) {
+                            cap.addRadiation(newRad);
+                        }
+                    });
                 }
             }
         }
     }
 
-
     // == ЛУЧЕВАЯ БОЛЕЗНЬ ================================================
-
-    //с доки для формулы (IncomingRad * GlobalDoseMultiplier * playerMultiplier)
+    // с доки для формулы (IncomingRad * GlobalDoseMultiplier * playerMultiplier)
     // – (GlobalIllnessDecay + PlayerIllnessDecay)
     private static final float GLOBAL_DOSE_MULTIPLIER = 0.10f;
     private static final float GLOBAL_ILLNESS_DECAY = 0.00002f;
@@ -239,7 +235,7 @@ public class WorldRadiationHandler {
 
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
-                    //временно (Артём должен переписать)
+                    // временно (Артём должен переписать)
                     float incomingRad = chunkRad.getRadiationLevel();
                     if (incomingRad <= 0f) return;
 
@@ -251,7 +247,7 @@ public class WorldRadiationHandler {
 
                         if (!level.getChunkAt(entity.blockPosition()).getPos().equals(chunk.getPos())) return;
 
-                        //переменные для нового просчёта поинтов радиации по доке
+                        // переменные для нового просчёта поинтов радиации по доке
                         ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(entity);
 
                         float playerMultiplier = protection.doseMultiplier();
@@ -263,7 +259,7 @@ public class WorldRadiationHandler {
 
                         entity.getCapability(RadiationCapability.RADIATION_ILLNESS).ifPresent(illness -> {
 
-                            //новая формула для добавления поинтов радиации по доке
+                            // новая формула для добавления поинтов радиации по доке
                             float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier) - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
                             if (radiationToAdd < 0f) {
                                 radiationToAdd = 0f;
@@ -287,7 +283,6 @@ public class WorldRadiationHandler {
     }
 
     // == ЭФФЕКТЫ ===========================================================
-
     private void applyStagePoisons(LivingEntity entity, IllnessStage stage) {
 
         final int D = 600;
@@ -350,7 +345,6 @@ public class WorldRadiationHandler {
     }
 
     // == ПАКЕТЫ ==========================================================================
-
     private void sendRadiationPackets(ServerLevel level) {
 
         for (ServerPlayer player : level.players()) {
@@ -363,5 +357,10 @@ public class WorldRadiationHandler {
 
                             new PacketChunkRadiation(cap.getRadiationLevel())));
         }
+    }
+
+    // == МЕНЕДЖЕР ИСТОЧНИКОВ ==========================================================================
+    public RadiationSourceManager getSourceManager() {
+        return sourceManager;
     }
 }
