@@ -5,7 +5,7 @@
   "item.nuclearwinter.ragged_armor_leggings": "§6Защитные Тряпичные Штаны",
   "item.nuclearwinter.ragged_armor_boots": "§6Защитные Тряпичные Ботинки",
   "item.nuclearwinter.mopp_armor_helmet": "§6Шлем ОЗК",
-  "item.nuclearwinter.mopp_armor_chestplate": "§Нагрудник ОЗК",
+  "item.nuclearwinter.mopp_armor_chestplate": "§6Нагрудник ОЗК",
   "item.nuclearwinter.mopp_armor_leggings": "§6Поножи ОЗК",
   "item.nuclearwinter.mopp_armor_boots": "§6Ботинки ОЗК",
   "item.nuclearwinter.hazmat_armor_helmet": "§6Шлем Химзащиты",
@@ -20,7 +20,7 @@
   "block.nuclearwinter.deepslate_uranium_ore": "Глубинная Урановая Руда",
   "block.nuclearwinter.raw_uranium_block": "Необработанный Урановый Блок",
   "item.nuclearwinter.raw_uranium": "Необработанный уран",
-  "item.nuclearwinter.yellow_cake": "Жёлтый торт",
+  "item.nuclearwinter.yellow_cake": "Жёлтый кек",
   "block.nuclearwinter.lead_block": "Блок Свинца",
   "item.nuclearwinter.raw_lead": "Сырой Свинец",
   "block.nuclearwinter.lead_ore": "Свинцовая Руда",
@@ -28,5 +28,11 @@
   "item.nuclearwinter.lead_plate": "Свинцовая Пластина",
   "item.nuclearwinter.lead_nugget": "Кусочек Свинца",
   "block.nuclearwinter.raw_lead_block": "Необработанный Свинец",
-  "block.nuclearwinter.deepslate_lead_ore": "Глубинная Свинцовая Руда"
+  "block.nuclearwinter.deepslate_lead_ore": "Глубинная Свинцовая Руда",
+  "item.nuclearwinter.filter": "Фильтр",
+  "item.nuclearwinter.radio_absorbing_composite": "Композит",
+  "item.nuclearwinter.hermetic_gasket": "Гермопрокладка",
+  "item.nuclearwinter.uranium_steel": "Урановая сталь",
+  "item.nuclearwinter.nuclear_filter": "Ядерный фильтр",
+  "item.nuclearwinter.microreactor": "Микрореактор"
 }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": {
+      "item": "nuclearwinter:lead_plate"
+    },
+    "C": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "H": {
+      "item": "nuclearwinter:hermetic_gasket"
+    },
+    "R": {
+      "item": "minecraft:comparator"
+    }
+    },
+  "pattern": [
+    "P P",
+    "CRC",
+    "CHC"
+  ],
+  "result": {
+    "item": "nuclearwinter:hazmat_armor_chestplate"
+  },
+  "show_notification": true
+}

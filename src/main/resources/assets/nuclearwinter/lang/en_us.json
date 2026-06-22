@@ -28,5 +28,11 @@
   "item.nuclearwinter.lead_plate": "Lead Plate",
   "item.nuclearwinter.lead_nugget": "Lead Nugget",
   "block.nuclearwinter.raw_lead_block": "Raw Lead Block",
-  "block.nuclearwinter.deepslate_lead_ore": "Deepslate Lead Ore"
+  "block.nuclearwinter.deepslate_lead_ore": "Deepslate Lead Ore",
+  "item.nuclearwinter.filter": "Filter",
+  "item.nuclearwinter.radio_absorbing_composite": "Radio-Absorbing Composite",
+  "item.nuclearwinter.hermetic_gasket": "Hermetic Gasket",
+  "item.nuclearwinter.uranium_steel": "Uranium Steel",
+  "item.nuclearwinter.nuclear_filter": "Nuclear Filter",
+  "item.nuclearwinter.microreactor": "Microreactor"
 }

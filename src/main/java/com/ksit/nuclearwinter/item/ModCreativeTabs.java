@@ -49,6 +49,12 @@ public final class ModCreativeTabs {
                                 //Крафтовые предметы
                                 output.accept(ModItems.LEAD_PLATE.get());
                                 output.accept(ModItems.LEAD_NUGGET.get());
+                                output.accept(ModItems.FILTER.get());
+                                output.accept(ModItems.HERMETIC_GASKET.get());
+                                output.accept(ModItems.RADIO_ABSORBING_COMPOSITE.get());
+                                output.accept(ModItems.MICROREACTOR.get());
+                                output.accept(ModItems.URANIUM_STEEL.get());
+                                output.accept(ModItems.NUCLEAR_FILTER.get());
 
                                 // Броня
                                 //tier1

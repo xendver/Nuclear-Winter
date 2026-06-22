@@ -1,7 +1,7 @@
 package com.ksit.nuclearwinter.client.renderer;
 
 import com.ksit.nuclearwinter.NuclearWinter;
-import com.ksit.nuclearwinter.item.ItemGeigerCounter;
+import com.ksit.nuclearwinter.item.custom.ItemGeigerCounter;
 import com.ksit.nuclearwinter.network.PacketChunkRadiation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

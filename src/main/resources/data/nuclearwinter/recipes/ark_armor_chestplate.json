@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "S": {
+      "item": "nuclearwinter:uranium_steel"
+    },
+    "M": {
+      "item": "nuclearwinter:microreactor"
+    }
+  },
+  "pattern": [
+    "S S",
+    "CMC",
+    "SCS"
+  ],
+  "result": {
+    "item": "nuclearwinter:ark_armor_chestplate"
+  },
+  "show_notification": true
+}

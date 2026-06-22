@@ -13,6 +13,6 @@ public class MOPPArmorRenderer extends GeoArmorRenderer<RaggedArmorItem> {
 
     public MOPPArmorRenderer() {
 
-        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/moop_armor")));
+        super(new DefaultedItemGeoModel<>(ResourceLocation.fromNamespaceAndPath(NuclearWinter.MOD_ID, "armor/mopp_armor")));
     }
 }
