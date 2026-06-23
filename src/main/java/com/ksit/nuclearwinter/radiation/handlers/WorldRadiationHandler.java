@@ -301,12 +301,11 @@ public class WorldRadiationHandler {
 
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
-                    //временно (Артём должен переписать)
-                    float incomingRad = chunkRad.getRadiationPollutionLevel();
+                    //временно (Артём должен переписать) (Артём переписал)
+                    float incomingRad = chunkRad.getRadiationActivityLevel();
                     if (incomingRad <= 0f) return;
 
-                    float chunkLevel = chunkRad.getRadiationPollutionLevel();
-
+                    float chunkLevel = chunkRad.getRadiationActivityLevel();
                     level.getEntities().getAll().forEach(entity -> {
 
                         if (!(entity instanceof LivingEntity living)) return;
