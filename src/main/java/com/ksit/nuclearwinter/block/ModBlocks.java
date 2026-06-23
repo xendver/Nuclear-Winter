@@ -103,6 +103,18 @@ public final class ModBlocks {
                     )
             );
 
+    public static final RegistryObject<Block> BUNKER_CONTROLLER =
+            BLOCKS.register(
+                    "bunker_controller",
+                    () -> new Block(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.COLOR_GREEN)
+                                    .strength(10f, 14f)
+                                    .sound(SoundType.METAL)
+                                    .requiresCorrectToolForDrops()
+                    )
+            );
+
     public static void registerBlockItems() {
 
         // Руды
@@ -158,6 +170,14 @@ public final class ModBlocks {
                 "lead_block",
                 () -> new BlockItem(
                         LEAD_BLOCK.get(),
+                        new Item.Properties()
+                )
+        );
+
+        ModItems.ITEMS.register(
+                "bunker_controller",
+                () -> new BlockItem(
+                        BUNKER_CONTROLLER.get(),
                         new Item.Properties()
                 )
         );

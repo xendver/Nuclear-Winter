@@ -35,6 +35,7 @@ public final class ModCreativeTabs {
                                 output.accept(ModBlocks.RAW_URANIUM_BLOCK.get());
                                 output.accept(ModBlocks.LEAD_BLOCK.get());
                                 output.accept(ModBlocks.RAW_LEAD_BLOCK.get());
+                                output.accept(ModBlocks.BUNKER_CONTROLLER.get());
 
                                 // Блокы руды
                                 output.accept(ModBlocks.URANIUM_ORE.get());

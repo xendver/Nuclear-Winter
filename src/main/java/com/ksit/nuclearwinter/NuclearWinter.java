@@ -1,5 +1,8 @@
 package com.ksit.nuclearwinter;
 
+import com.ksit.nuclearwinter.events.BlockBreakListener;
+import com.ksit.nuclearwinter.events.BlockPlaceListener;
+import com.ksit.nuclearwinter.events.TickListener;
 import com.ksit.nuclearwinter.item.ModItems;
 import com.ksit.nuclearwinter.network.PacketHandler;
 import com.ksit.nuclearwinter.radiation.RadiationCapability;
@@ -43,7 +46,9 @@ public class NuclearWinter {
         MinecraftForge.EVENT_BUS.register(new WorldRadiationHandler());
         MinecraftForge.EVENT_BUS.register(new EntityEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommandRadiationInfo());
-
+        MinecraftForge.EVENT_BUS.register(new BlockPlaceListener());
+        MinecraftForge.EVENT_BUS.register(new BlockBreakListener());
+        MinecraftForge.EVENT_BUS.register(new TickListener());
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
