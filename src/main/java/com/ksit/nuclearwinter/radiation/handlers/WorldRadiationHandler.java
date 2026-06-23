@@ -8,6 +8,8 @@ import com.ksit.nuclearwinter.radiation.RadiationConfig;
 import com.ksit.nuclearwinter.radiation.RadiationSourceManager;
 import com.ksit.nuclearwinter.radiation.ResistanceRegistry;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
+import it.unimi.dsi.fastutil.longs.Long2FloatMap;
+import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
@@ -29,6 +31,8 @@ public class WorldRadiationHandler {
     // главный кэш/менеджер всех активных источников радиации мира
     private final RadiationSourceManager sourceManager = new RadiationSourceManager();
 
+    // мапа, в которой будут хранится все вклады источников в определённый чанк
+    private final Long2FloatOpenHashMap chunkActivities = new Long2FloatOpenHashMap();
     // == TICK =============================================
     @SubscribeEvent
     public void onLevelTick(TickEvent.LevelTickEvent event) {
@@ -176,9 +180,10 @@ public class WorldRadiationHandler {
     private void updateChunkRadiation(ServerLevel level) {
 
         // Ключ = ChunkPos.asLong(x, z)
-        // Значение = суммарная активность чанка за этот тик
-        Map<Long, Float> chunkActivities = new HashMap<>();
-
+        // Значение = суммарная активность чанка за эту секунду
+        final Long2FloatOpenHashMap chunkActivities = this.chunkActivities;
+        chunkActivities.clear();
+        chunkActivities.defaultReturnValue(0f);
         /*
          * ==========================================
          * ПЕРВЫЙ ПРОХОД
@@ -186,11 +191,14 @@ public class WorldRadiationHandler {
          * ==========================================
          */
 
+        //пробег по всем источникам
         for (ActiveSource source : sourceManager.getAllSources()) {
 
+            //получаем координаты источника
             int sourceChunkX = source.chunkX();
             int sourceChunkZ = source.chunkZ();
 
+            //получаем радиус источника
             float radius = source.radiation().getRadius();
             int chunkRadius = (int) Math.ceil(radius);
 
@@ -200,26 +208,24 @@ public class WorldRadiationHandler {
                     int targetChunkX = sourceChunkX + dx;
                     int targetChunkZ = sourceChunkZ + dz;
 
+                    //получаем чанк и проверяем находится он в прогрузке или нет
                     LevelChunk chunk = level.getChunkSource().getChunkNow(targetChunkX, targetChunkZ);
                     if (chunk == null) continue;
 
 
-
+                    //ищем дистанцию от чанка до источника
                     float distanceX = targetChunkX - sourceChunkX;
                     float distanceZ = targetChunkZ - sourceChunkZ;
                     float distance = (float) Math.sqrt(distanceX * distanceX + distanceZ * distanceZ);
 
+                    //высчитываем вклад источника в этот чанк
                     float contribution = source.radiation().getInitialPower() - source.radiation().getDecayPerChunk() * distance;
 
                     if (contribution <= 0) continue;
 
+                    //добавляем это в мапу с вкладами источников
                     long key = ChunkPos.asLong(targetChunkX, targetChunkZ);
-
-                    chunkActivities.merge(
-                                key,
-                                contribution,
-                                Float::sum
-                    );
+                    chunkActivities.addTo(key, contribution);
                     }
                 }
             }
@@ -228,49 +234,51 @@ public class WorldRadiationHandler {
          * ==========================================
          * ВТОРОЙ ПРОХОД
          * Записываем activity и pollution в capability
+         * перенос из таблицы в капабилити
          * ==========================================
          */
 
-        for (Map.Entry<Long, Float> entry: chunkActivities.entrySet()) {
+        for (Long2FloatMap.Entry entry: chunkActivities.long2FloatEntrySet()) {
 
-            ChunkPos pos = new ChunkPos(entry.getKey());
-
-            LevelChunk chunk = level.getChunkSource().getChunkNow(pos.x, pos.z);
+            //получаем чанк
+            long key = entry.getLongKey();
+            int chunkX = ChunkPos.getX(key);
+            int chunkZ = ChunkPos.getZ(key);
+            LevelChunk chunk = level.getChunkSource().getChunkNow(chunkX, chunkZ);
 
             if (chunk == null) continue;
 
-            float activity = entry.getValue();
+            //получаем вклад всех источников за последнюю секунду
+            float activity = entry.getFloatValue();
 
-            /*
-             * ACTIVITY
-             * Всегда хранит сумму вкладов
-             * за текущий тик.
-             */
 
             chunk.getCapability(
                             RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(cap ->
-                            cap.setRadiationActivityLevel(
-                                    activity
-                            ));
+                    .ifPresent(cap ->{
 
-            /*
-             * POLLUTION
-             * Накопленная радиация.
-             */
+                        /*
+                         * ACTIVITY
+                         * Всегда хранит сумму вкладов
+                         * за текущий тик.
+                         */
 
-            chunk.getCapability(RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(cap -> {
+                        //записываем activity в capability
+                            cap.setRadiationActivityLevel(activity);
 
+                        /*
+                         * POLLUTION
+                         * Накопленная радиация.
+                         */
+
+                        //добавляем значение activity (вкладу всех источников за последнюю секунду) к pollution (радиационному загрязнению)
+                        //и применяем decay
                         float pollution = cap.getRadiationPollutionLevel();
 
                         pollution *= (1f - RadiationConfig.DECAY_RATE);
 
                         pollution += activity;
 
-                        cap.setRadiationPollutionLevel(
-                                pollution
-                        );
+                        cap.setRadiationPollutionLevel(pollution);
                     });
         }
     }

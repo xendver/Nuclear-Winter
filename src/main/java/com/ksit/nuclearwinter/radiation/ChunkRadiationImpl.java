@@ -10,7 +10,7 @@ public class ChunkRadiationImpl implements IChunkRadiation {
 
     @Override
     public float getRadiationPollutionLevel() {
-        return radiationPollutionLevel;
+        return this.radiationPollutionLevel;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ChunkRadiationImpl implements IChunkRadiation {
     }
 
     @Override
-    public float getRadiationActivityLevel() { return radiationActivityLevel; }
+    public float getRadiationActivityLevel() { return this.radiationActivityLevel; }
 
     @Override
     public void setRadiationActivityLevel(float level) {
@@ -43,7 +43,7 @@ public class ChunkRadiationImpl implements IChunkRadiation {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat("radiationPollution", radiationPollutionLevel);
+        tag.putFloat("radiationPollution", this.radiationPollutionLevel);
         return tag;
     }
 
