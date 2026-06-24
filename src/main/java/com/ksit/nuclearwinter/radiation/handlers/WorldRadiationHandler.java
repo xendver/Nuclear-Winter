@@ -10,15 +10,11 @@ import com.ksit.nuclearwinter.radiation.ResistanceRegistry;
 import com.ksit.nuclearwinter.radiation.illness.IllnessStage;
 import it.unimi.dsi.fastutil.longs.Long2FloatMap;
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.TickEvent;
@@ -291,66 +287,76 @@ public class WorldRadiationHandler {
 
     private void applyIllnessEffects(ServerLevel level) {
 
-        List<LivingEntity> stageDamage1 = new ArrayList<>();
         List<LivingEntity> stageDamage3 = new ArrayList<>();
+        List<LivingEntity> stageDamage4 = new ArrayList<>();
 
+        //получаем игроков сервера
         for (ServerPlayer player : level.players()) {
+            //пробегаемся по чанкам вокруг игроков
             for (ChunkPos pos : getLoadedChunksForPlayer(player)) {
 
                 LevelChunk chunk = level.getChunk(pos.x, pos.z);
 
+                //получаем радиацию чанка
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
-                    //временно (Артём должен переписать) (Артём переписал)
+                    //получаем радиацию в этом чанке
                     float incomingRad = chunkRad.getRadiationActivityLevel();
                     if (incomingRad <= 0f) return;
 
                     float chunkLevel = chunkRad.getRadiationActivityLevel();
+
+                    //пробегаемся по ВСЕМ энтити в мире
                     level.getEntities().getAll().forEach(entity -> {
 
+                        //если энтити не живой, то не обрабатываем его
                         if (!(entity instanceof LivingEntity living)) return;
 
-                        if (!level.getChunkAt(entity.blockPosition()).getPos().equals(chunk.getPos())) return;
+                        //получаем позицию энтити
+                        ChunkPos entityPos = new ChunkPos(entity.blockPosition());
+                        //сравниваем с позицией чанка
+                        if (!entityPos.equals(chunk.getPos())) return;
 
-                        // переменные для нового просчёта поинтов радиации по доке
+                        // переменные для нового просчёта поинтов радиации по доке (сопротивление и illnessDecay)
                         ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(entity);
 
-                        float playerMultiplier = protection.doseMultiplier();
-                        float playerIllnessDecay = protection.illnessDecayBonus();
+                        float playerMultiplier = protection.doseMultiplier(); //сопротивление радиации (%), чем меньше -- тем меньше болезнь
+                        float playerIllnessDecay = protection.illnessDecayBonus(); /*убывание радиации (рад)
+                                                                                    *если больше 0, то лучевая болезнь медленнее прогрессирует
+                                                                                    *если меньше 0, то лучевая болезнь прогрессирует быстрее
+                                                                                    */
 
-                        if (playerMultiplier <= 0f) {
-                            return;
-                        }
-
+                        //получаем капабилити лучевой болезни
                         entity.getCapability(RadiationCapability.RADIATION_ILLNESS).ifPresent(illness -> {
 
                             // новая формула для добавления поинтов радиации по доке
                             float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier) - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
-                            if (radiationToAdd < 0f) {
-                                radiationToAdd = 0f;
-                            }
 
+                            //добавляем поинты радиации
                             illness.addRadiationPoints(radiationToAdd);
 
+                            //накладываем эффекты
                             applyStagePoisons(living, illness.getStage());
 
-                            if (illness.getStage() == IllnessStage.STAGE_3) stageDamage1.add(living);
+                            //добавляем тех, кого надо задамажить в список???
+                            if (illness.getStage() == IllnessStage.STAGE_3) stageDamage3.add(living);
 
-                            if (illness.getStage() == IllnessStage.STAGE_4) stageDamage3.add(living);
+                            if (illness.getStage() == IllnessStage.STAGE_4) stageDamage4.add(living);
                         });
                     });
                 });
             }
         }
 
-        stageDamage1.forEach(e -> e.hurt(e.level().damageSources().magic(), 1.0f));
-        stageDamage3.forEach(e -> e.hurt(e.level().damageSources().magic(), 3.0f));
+        //дамажим всех, кто в списке
+        stageDamage3.forEach(e -> e.hurt(e.level().damageSources().magic(), 1.0f));
+        stageDamage4.forEach(e -> e.hurt(e.level().damageSources().magic(), 3.0f));
     }
 
     // == ЭФФЕКТЫ ===========================================================
     private void applyStagePoisons(LivingEntity entity, IllnessStage stage) {
 
-        final int D = 600;
+        final int Duration = 600;
 
         switch (stage) {
 
@@ -359,52 +365,52 @@ public class WorldRadiationHandler {
 
             case STAGE_1 -> {
 
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 0, false, false));
             }
 
             case STAGE_2 -> {
 
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, Duration, 1, false, false));
             }
 
             case STAGE_3 -> {
 
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 2, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 2, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
             }
 
             case STAGE_4 -> {
 
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 1, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, D, 3, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 3, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, D, 0, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
 
-                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, D, 1, false, false));
+                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, Duration, 1, false, false));
             }
         }
     }
