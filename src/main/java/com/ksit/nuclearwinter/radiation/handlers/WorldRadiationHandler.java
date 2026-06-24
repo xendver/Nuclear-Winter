@@ -14,9 +14,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -286,77 +288,152 @@ public class WorldRadiationHandler {
     private static final float GLOBAL_ILLNESS_DECAY = 0.00002f;
 
     private void applyIllnessEffects(ServerLevel level) {
+        /*
+         * Нужен для защиты от повторной обработки.
+         *
+         * Один и тот же чанк может попасть в радиус
+         * нескольких игроков.
+         *
+         * Без этой проверки сущности внутри чанка
+         * будут получать радиацию несколько раз за тик.
+         */
+        Set<Long> processedChunks = new HashSet<>();
 
-        List<LivingEntity> stageDamage3 = new ArrayList<>();
-        List<LivingEntity> stageDamage4 = new ArrayList<>();
 
-        //получаем игроков сервера
+        /*
+         * ==================================================
+         * ОБХОД ИГРОКОВ
+         * ==================================================
+         */
         for (ServerPlayer player : level.players()) {
-            //пробегаемся по чанкам вокруг игроков
+
+            /*
+             * Получаем все загруженные чанки,
+             * которые находятся в зоне прогрузки игрока.
+             */
             for (ChunkPos pos : getLoadedChunksForPlayer(player)) {
 
+                long chunkKey = pos.toLong();
+
+                /*
+                 * Если этот чанк уже был обработан
+                 * через другого игрока — пропускаем.
+                 */
+                if (!processedChunks.add(chunkKey))
+                    continue;
+
+
+                /*
+                 * Получаем сам чанк.
+                 */
                 LevelChunk chunk = level.getChunk(pos.x, pos.z);
 
-                //получаем радиацию чанка
+                /*
+                 * ==================================================
+                 * ПОЛУЧАЕМ РАДИАЦИЮ ЧАНКА
+                 * ==================================================
+                 */
                 chunk.getCapability(RadiationCapability.CHUNK_RADIATION).ifPresent(chunkRad -> {
 
-                    //получаем радиацию в этом чанке
+                    /*
+                     * Activity = текущая активность
+                     * за последнюю секунду.
+                     */
                     float incomingRad = chunkRad.getRadiationActivityLevel();
-                    if (incomingRad <= 0f) return;
 
-                    float chunkLevel = chunkRad.getRadiationActivityLevel();
+                    /*
+                     * ==================================================
+                     * ПОЛУЧАЕМ СУЩНОСТИ ТОЛЬКО ИЗ ЭТОГО ЧАНКА
+                     * ==================================================
+                     */
 
-                    //пробегаемся по ВСЕМ энтити в мире
-                    level.getEntities().getAll().forEach(entity -> {
+                    //получаем ААВВ чанка
+                    AABB chunkBox = new AABB(
+                            pos.getMinBlockX(),
+                            level.getMinBuildHeight(),
+                            pos.getMinBlockZ(),
 
-                        //если энтити не живой, то не обрабатываем его
-                        if (!(entity instanceof LivingEntity living)) return;
+                            pos.getMaxBlockX() + 1,
+                            level.getMaxBuildHeight(),
+                            pos.getMaxBlockZ() + 1
+                    );
 
-                        //получаем позицию энтити
-                        ChunkPos entityPos = new ChunkPos(entity.blockPosition());
-                        //сравниваем с позицией чанка
-                        if (!entityPos.equals(chunk.getPos())) return;
+                    //получаем сущности только из этого чанка
+                    List<Entity> entities = level.getEntities(null, chunkBox);
 
-                        // переменные для нового просчёта поинтов радиации по доке (сопротивление и illnessDecay)
-                        ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(entity);
+                    /*
+                     * ===================
+                     * ОБРАБОТКА СУЩНОСТЕЙ
+                     * ===================
+                     */
+                    for (Entity entity : entities) {
 
-                        float playerMultiplier = protection.doseMultiplier(); //сопротивление радиации (%), чем меньше -- тем меньше болезнь
-                        float playerIllnessDecay = protection.illnessDecayBonus(); /*убывание радиации (рад)
-                                                                                    *если больше 0, то лучевая болезнь медленнее прогрессирует
-                                                                                    *если меньше 0, то лучевая болезнь прогрессирует быстрее
-                                                                                    */
+                        /*
+                         * Нас интересуют только живые сущности.
+                         */
+                        if (!(entity instanceof LivingEntity living))
+                            continue;
 
-                        //получаем капабилити лучевой болезни
-                        entity.getCapability(RadiationCapability.RADIATION_ILLNESS).ifPresent(illness -> {
+                        /*
+                         * Получаем защиту сущности.
+                         *
+                         * doseMultiplier:
+                         * множитель входящей радиации.
+                         *
+                         * illnessDecayBonus:
+                         * бонус к естественному снижению
+                         * лучевой болезни.
+                         */
+                        ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(living);
 
-                            // новая формула для добавления поинтов радиации по доке
-                            float radiationToAdd = (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier) - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
+                        float playerMultiplier = protection.doseMultiplier();
+                        float playerIllnessDecay = protection.illnessDecayBonus();
 
-                            //добавляем поинты радиации
+
+                        /*
+                         * ==================================================
+                         * ПОЛУЧАЕМ КАПАБИЛИТИ ЛУЧЕВОЙ БОЛЕЗНИ
+                         * ==================================================
+                         */
+                        living.getCapability(RadiationCapability.RADIATION_ILLNESS).ifPresent(illness -> {
+
+                            /*
+                             * Формула начисления лучевой болезни.
+                             *
+                             * Чем больше радиация чанка —
+                             * тем быстрее растёт болезнь.
+                             *
+                             * Чем лучше защита —
+                             * тем меньше прирост.
+                             */
+                            float radiationToAdd =
+                                    (incomingRad * GLOBAL_DOSE_MULTIPLIER * playerMultiplier)
+                                            - (GLOBAL_ILLNESS_DECAY + playerIllnessDecay);
+
+
+                            /*
+                             * Добавляем поинты болезни.
+                             */
                             illness.addRadiationPoints(radiationToAdd);
 
-                            //накладываем эффекты
+                            /*
+                             * Накладываем эффекты стадии.
+                             */
                             applyStagePoisons(living, illness.getStage());
-
-                            //добавляем тех, кого надо задамажить в список???
-                            if (illness.getStage() == IllnessStage.STAGE_3) stageDamage3.add(living);
-
-                            if (illness.getStage() == IllnessStage.STAGE_4) stageDamage4.add(living);
                         });
-                    });
+                    }
                 });
             }
         }
-
-        //дамажим всех, кто в списке
-        stageDamage3.forEach(e -> e.hurt(e.level().damageSources().magic(), 1.0f));
-        stageDamage4.forEach(e -> e.hurt(e.level().damageSources().magic(), 3.0f));
     }
+
 
     // == ЭФФЕКТЫ ===========================================================
     private void applyStagePoisons(LivingEntity entity, IllnessStage stage) {
 
         final int Duration = 600;
+        final float DAMAGE_STAGE3 = 1.0f;
+        final float DAMAGE_STAGE4 = 3.0f;
 
         switch (stage) {
 
@@ -396,6 +473,8 @@ public class WorldRadiationHandler {
                 entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 2, false, false));
 
                 entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
+
+                entity.hurt(entity.damageSources().magic(), DAMAGE_STAGE3);
             }
 
             case STAGE_4 -> {
@@ -411,6 +490,8 @@ public class WorldRadiationHandler {
                 entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
 
                 entity.addEffect(new MobEffectInstance(MobEffects.WITHER, Duration, 1, false, false));
+
+                entity.hurt(entity.damageSources().magic(), DAMAGE_STAGE4);
             }
         }
     }
