@@ -1,5 +1,9 @@
 package com.ksit.nuclearwinter.radiation.handlers;
 
+import com.ksit.nuclearwinter.effect.ModEffects;
+import com.ksit.nuclearwinter.effect.illness.StageOne;
+import com.ksit.nuclearwinter.effect.illness.StageThree;
+import com.ksit.nuclearwinter.effect.illness.StageTwo;
 import com.ksit.nuclearwinter.network.PacketChunkRadiation;
 import com.ksit.nuclearwinter.network.PacketHandler;
 import com.ksit.nuclearwinter.radiation.ActiveSource;
@@ -31,6 +35,7 @@ public class WorldRadiationHandler {
 
     // мапа, в которой будут хранится все вклады источников в определённый чанк
     private final Long2FloatOpenHashMap chunkActivities = new Long2FloatOpenHashMap();
+
     // == TICK =============================================
     @SubscribeEvent
     public void onLevelTick(TickEvent.LevelTickEvent event) {
@@ -224,9 +229,9 @@ public class WorldRadiationHandler {
                     //добавляем это в мапу с вкладами источников
                     long key = ChunkPos.asLong(targetChunkX, targetChunkZ);
                     chunkActivities.addTo(key, contribution);
-                    }
                 }
             }
+        }
 
         /*
          * ==========================================
@@ -236,7 +241,7 @@ public class WorldRadiationHandler {
          * ==========================================
          */
 
-        for (Long2FloatMap.Entry entry: chunkActivities.long2FloatEntrySet()) {
+        for (Long2FloatMap.Entry entry : chunkActivities.long2FloatEntrySet()) {
 
             //получаем чанк
             long key = entry.getLongKey();
@@ -252,7 +257,7 @@ public class WorldRadiationHandler {
 
             chunk.getCapability(
                             RadiationCapability.CHUNK_RADIATION)
-                    .ifPresent(cap ->{
+                    .ifPresent(cap -> {
 
                         /*
                          * ACTIVITY
@@ -261,7 +266,7 @@ public class WorldRadiationHandler {
                          */
 
                         //записываем activity в capability
-                            cap.setRadiationActivityLevel(activity);
+                        cap.setRadiationActivityLevel(activity);
 
                         /*
                          * POLLUTION
@@ -431,67 +436,53 @@ public class WorldRadiationHandler {
     // == ЭФФЕКТЫ ===========================================================
     private void applyStagePoisons(LivingEntity entity, IllnessStage stage) {
 
-        final int Duration = 600;
-        final float DAMAGE_STAGE3 = 1.0f;
-        final float DAMAGE_STAGE4 = 3.0f;
+        final int DURATION = -1;
 
         switch (stage) {
-
-            case NONE -> {
-            }
-
             case STAGE_1 -> {
-
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 0, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 0, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 0, false, false));
+                entity.addEffect(new MobEffectInstance(
+                        ModEffects.STAGE_ONE.get(),
+                        DURATION,
+                        0,
+                        false,
+                        false
+                ));
             }
-
             case STAGE_2 -> {
-
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 1, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 1, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 0, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 1, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, Duration, 1, false, false));
+                if (entity.hasEffect(ModEffects.STAGE_ONE.get())) {
+                    StageOne.clear(entity);
+                }
+                entity.addEffect(new MobEffectInstance(
+                        ModEffects.STAGE_TWO.get(),
+                        DURATION,
+                        0,
+                        false,
+                        false
+                ));
             }
-
             case STAGE_3 -> {
-
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 2, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 2, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 1, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 2, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
-
-                entity.hurt(entity.damageSources().magic(), DAMAGE_STAGE3);
+                if (entity.hasEffect(ModEffects.STAGE_TWO.get())) {
+                    StageTwo.clear(entity);
+                }
+                entity.addEffect(new MobEffectInstance(
+                        ModEffects.STAGE_THREE.get(),
+                        DURATION,
+                        0,
+                        false,
+                        false
+                ));
             }
-
             case STAGE_4 -> {
-
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Duration, 3, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, Duration, 3, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Duration, 1, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, Duration, 3, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Duration, 0, false, false));
-
-                entity.addEffect(new MobEffectInstance(MobEffects.WITHER, Duration, 1, false, false));
-
-                entity.hurt(entity.damageSources().magic(), DAMAGE_STAGE4);
+                if (entity.hasEffect(ModEffects.STAGE_THREE.get())) {
+                    StageThree.clear(entity);
+                }
+                entity.addEffect(new MobEffectInstance(
+                        ModEffects.STAGE_FOUR.get(),
+                        DURATION,
+                        0,
+                        false,
+                        false
+                ));
             }
         }
     }

@@ -34,5 +34,9 @@
   "item.nuclearwinter.hermetic_gasket": "Hermetic Gasket",
   "item.nuclearwinter.uranium_steel": "Uranium Steel",
   "item.nuclearwinter.nuclear_filter": "Nuclear Filter",
-  "item.nuclearwinter.microreactor": "Microreactor"
+  "item.nuclearwinter.microreactor": "Microreactor",
+  "effect.nuclearwinter.stage_one": "Irradiation I",
+  "effect.nuclearwinter.stage_two": "Irradiation II",
+  "effect.nuclearwinter.stage_three": "Irradiation III",
+  "effect.nuclearwinter.stage_four": "Irradiation IV"
 }

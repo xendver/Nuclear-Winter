@@ -1,5 +1,7 @@
 package com.ksit.nuclearwinter;
 
+import com.ksit.nuclearwinter.effect.ModEffects;
+import com.ksit.nuclearwinter.events.RightClickItem;
 import com.ksit.nuclearwinter.item.ModItems;
 import com.ksit.nuclearwinter.network.PacketHandler;
 import com.ksit.nuclearwinter.radiation.RadiationCapability;
@@ -43,6 +45,8 @@ public class NuclearWinter {
         MinecraftForge.EVENT_BUS.register(new WorldRadiationHandler());
         MinecraftForge.EVENT_BUS.register(new EntityEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommandRadiationInfo());
+        MinecraftForge.EVENT_BUS.register(new RightClickItem());
+        ModEffects.EFFECTS.register(modBus);
 
     }
 

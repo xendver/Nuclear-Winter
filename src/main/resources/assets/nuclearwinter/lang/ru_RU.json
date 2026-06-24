@@ -34,5 +34,9 @@
   "item.nuclearwinter.hermetic_gasket": "Гермопрокладка",
   "item.nuclearwinter.uranium_steel": "Урановая сталь",
   "item.nuclearwinter.nuclear_filter": "Ядерный фильтр",
-  "item.nuclearwinter.microreactor": "Микрореактор"
+  "item.nuclearwinter.microreactor": "Микрореактор",
+  "effect.nuclearwinter.stage_one": "Облучение I",
+  "effect.nuclearwinter.stage_two": "Облучение II",
+  "effect.nuclearwinter.stage_three": "Облучение III",
+  "effect.nuclearwinter.stage_four": "Облучение IV"
 }
