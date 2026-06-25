@@ -6,10 +6,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 public class StageOne extends MobEffect {
-    private static final MobEffect[] STAGE_EFFECTS = new MobEffect[] {
+    private static final MobEffect[] STAGE_EFFECTS = new MobEffect[]{
             MobEffects.MOVEMENT_SLOWDOWN,
             MobEffects.WEAKNESS,
             MobEffects.CONFUSION
@@ -19,17 +18,17 @@ public class StageOne extends MobEffect {
 
     public StageOne() {
         super(
-                MobEffectCategory.HARMFUL, // положительный эффект
-                0x00FFFF // цвет в GUI
+                MobEffectCategory.HARMFUL,
+                0x00FFFF
         );
     }
 
-    private void apply(Player player, MobEffect effect, int amp, int duration) {
+    private void apply(LivingEntity entity, MobEffect effect, int amp, int duration) {
 
-        MobEffectInstance current = player.getEffect(effect);
+        MobEffectInstance current = entity.getEffect(effect);
 
         if (current == null) {
-            player.addEffect(new MobEffectInstance(
+            entity.addEffect(new MobEffectInstance(
                     effect,
                     duration,
                     amp,
@@ -42,14 +41,13 @@ public class StageOne extends MobEffect {
 
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-        if (entity instanceof Player player) {
 
-            if (player.tickCount % 20 != 0) return;
+        if (entity.tickCount % 20 != 0) return;
 
-            apply(player, MobEffects.MOVEMENT_SLOWDOWN, 0, duration);
-            apply(player, MobEffects.WEAKNESS, 0, duration);
-            apply(player, MobEffects.CONFUSION, 0, duration);
-        }
+        apply(entity, MobEffects.MOVEMENT_SLOWDOWN, 0, duration);
+        apply(entity, MobEffects.WEAKNESS, 0, duration);
+        apply(entity, MobEffects.CONFUSION, 0, duration);
+
 
     }
 
@@ -63,7 +61,6 @@ public class StageOne extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        // частота срабатывания
         return true;
     }
 

@@ -1,5 +1,6 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.source;
 
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
 import net.minecraft.nbt.CompoundTag;
 
 // Данные источника радиации

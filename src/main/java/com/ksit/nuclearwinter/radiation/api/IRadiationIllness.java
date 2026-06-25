@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation.illness;
+package com.ksit.nuclearwinter.radiation.api;
 
 import net.minecraft.nbt.CompoundTag;
 

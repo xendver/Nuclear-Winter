@@ -1,5 +1,7 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.chunk;
 
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;

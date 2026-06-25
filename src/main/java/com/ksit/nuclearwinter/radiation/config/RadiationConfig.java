@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.config;
 
 // Константы системы расчёта радиации
 // В будущем можно читать из config файла

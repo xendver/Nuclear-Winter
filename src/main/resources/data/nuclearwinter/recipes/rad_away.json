@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "nuclearwinter:potassium_iodide"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "pattern": [
+    "IGB",
+    "I  "
+  ],
+  "result": {
+    "item": "nuclearwinter:rad_away"
+  },
+  "show_notification": true
+}

@@ -1,10 +1,14 @@
 package com.ksit.nuclearwinter.effect;
 
 import com.ksit.nuclearwinter.NuclearWinter;
+import com.ksit.nuclearwinter.effect.food.ChelatorEffect;
+import com.ksit.nuclearwinter.effect.food.PotassiumIodideEffect;
+import com.ksit.nuclearwinter.effect.food.RadAwayEffect;
 import com.ksit.nuclearwinter.effect.illness.StageFour;
 import com.ksit.nuclearwinter.effect.illness.StageOne;
 import com.ksit.nuclearwinter.effect.illness.StageThree;
 import com.ksit.nuclearwinter.effect.illness.StageTwo;
+import com.ksit.nuclearwinter.item.food.PotassiumIodide;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -62,6 +66,24 @@ public class ModEffects {
             EFFECTS.register(
                     "stage_four",
                     StageFour::new
+            );
+
+    public static final RegistryObject<MobEffect> POTASSIUM_IODIDE_EFFECT =
+            EFFECTS.register(
+                    "potassium_iodide_effect",
+                    PotassiumIodideEffect::new
+            );
+
+    public static final RegistryObject<MobEffect> RAD_AWAY_EFFECT =
+            EFFECTS.register(
+                    "rad_away_effect",
+                    RadAwayEffect::new
+            );
+
+    public static final RegistryObject<MobEffect> CHELATOR_EFFECT =
+            EFFECTS.register(
+                    "chelator_effect",
+                    ChelatorEffect::new
             );
 
 }

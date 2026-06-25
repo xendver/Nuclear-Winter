@@ -1,8 +1,8 @@
 package com.ksit.nuclearwinter.radiation.handlers;
 
 import com.ksit.nuclearwinter.NuclearWinter;
-import com.ksit.nuclearwinter.radiation.ChunkRadiationProvider;
-import com.ksit.nuclearwinter.radiation.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.chunk.ChunkRadiationProvider;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.AttachCapabilitiesEvent;

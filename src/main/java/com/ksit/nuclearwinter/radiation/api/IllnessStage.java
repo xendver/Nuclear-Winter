@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation.illness;
+package com.ksit.nuclearwinter.radiation.api;
 
 // Стадии лучевой болезни
 // Points облучения накапливаются со временем пока entity находится в заражённом чанке

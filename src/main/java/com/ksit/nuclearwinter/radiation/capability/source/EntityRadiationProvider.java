@@ -1,5 +1,7 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability.source;
 
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;

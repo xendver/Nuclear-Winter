@@ -1,6 +1,8 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.capability;
 
-import com.ksit.nuclearwinter.radiation.illness.IRadiationIllness;
+import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
+import com.ksit.nuclearwinter.radiation.api.IRadiation;
+import com.ksit.nuclearwinter.radiation.api.IRadiationIllness;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;

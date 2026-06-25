@@ -1,4 +1,4 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.registry;
 
 import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;

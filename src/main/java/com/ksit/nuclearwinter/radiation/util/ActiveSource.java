@@ -1,5 +1,6 @@
-package com.ksit.nuclearwinter.radiation;
+package com.ksit.nuclearwinter.radiation.util;
 
+import com.ksit.nuclearwinter.radiation.capability.source.RadiationImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 

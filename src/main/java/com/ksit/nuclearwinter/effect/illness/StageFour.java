@@ -6,7 +6,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 public class StageFour extends MobEffect {
     private static final MobEffect[] STAGE_EFFECTS = new MobEffect[]{
@@ -22,17 +21,17 @@ public class StageFour extends MobEffect {
 
     public StageFour() {
         super(
-                MobEffectCategory.HARMFUL, // положительный эффект
-                0x00FFFF // цвет в GUI
+                MobEffectCategory.HARMFUL,
+                0x00FFFF
         );
     }
 
-    private void apply(Player player, MobEffect effect, int amp, int duration) {
+    private void apply(LivingEntity entity, MobEffect effect, int amp, int duration) {
 
-        MobEffectInstance current = player.getEffect(effect);
+        MobEffectInstance current = entity.getEffect(effect);
 
         if (current == null) {
-            player.addEffect(new MobEffectInstance(
+            entity.addEffect(new MobEffectInstance(
                     effect,
                     duration,
                     amp,
@@ -45,18 +44,18 @@ public class StageFour extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
 
-        if (entity instanceof Player player) {
-            if (player.tickCount % 20 != 0) return;
 
-            apply(player, MobEffects.MOVEMENT_SLOWDOWN, 3, duration);
-            apply(player, MobEffects.WEAKNESS, 3, duration);
-            apply(player, MobEffects.CONFUSION, 1, duration);
-            apply(player, MobEffects.HUNGER, 3, duration);
-            apply(player, MobEffects.BLINDNESS, 0, duration);
-            apply(player, MobEffects.WITHER, 1, duration);
+        if (entity.tickCount % 20 != 0) return;
 
-            entity.hurt(entity.damageSources().magic(), 3.0f);
-        }
+        apply(entity, MobEffects.MOVEMENT_SLOWDOWN, 3, duration);
+        apply(entity, MobEffects.WEAKNESS, 3, duration);
+        apply(entity, MobEffects.CONFUSION, 1, duration);
+        apply(entity, MobEffects.HUNGER, 3, duration);
+        apply(entity, MobEffects.BLINDNESS, 0, duration);
+        apply(entity, MobEffects.WITHER, 1, duration);
+
+        entity.hurt(entity.damageSources().magic(), 3.0f);
+
 
     }
 
@@ -71,7 +70,6 @@ public class StageFour extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        // частота срабатывания
         return true;
     }
 }
