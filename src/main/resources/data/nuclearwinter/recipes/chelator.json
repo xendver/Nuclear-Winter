@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "nuclearwinter:rad_away"
+    },
+    "A": {
+      "item": "minecraft:diamond"
+    },
+    "B": {
+      "item": "minecraft:glass_bottle"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "IRB",
+    "IA "
+  ],
+  "result": {
+    "item": "nuclearwinter:chelator"
+  },
+  "show_notification": true
+}

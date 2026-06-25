@@ -1,7 +1,7 @@
 package com.ksit.nuclearwinter.item.custom;
 
 import com.ksit.nuclearwinter.client.renderer.ItemGeigerRenderer;
-import com.ksit.nuclearwinter.radiation.ItemRadiationProvider;
+import com.ksit.nuclearwinter.radiation.capability.source.ItemRadiationProvider;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;

@@ -1,9 +1,9 @@
 package com.ksit.nuclearwinter.radiation.handlers;
 
 import com.ksit.nuclearwinter.NuclearWinter;
-import com.ksit.nuclearwinter.radiation.EntityRadiationProvider;
-import com.ksit.nuclearwinter.radiation.RadiationCapability;
-import com.ksit.nuclearwinter.radiation.illness.RadiationIllnessProvider;
+import com.ksit.nuclearwinter.radiation.capability.source.EntityRadiationProvider;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.illness.RadiationIllnessProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;

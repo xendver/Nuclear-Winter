@@ -1,8 +1,10 @@
 package com.ksit.nuclearwinter;
 
+import com.ksit.nuclearwinter.effect.ModEffects;
+import com.ksit.nuclearwinter.events.RightClickItem;
 import com.ksit.nuclearwinter.item.ModItems;
 import com.ksit.nuclearwinter.network.PacketHandler;
-import com.ksit.nuclearwinter.radiation.RadiationCapability;
+import com.ksit.nuclearwinter.radiation.capability.RadiationCapability;
 import com.ksit.nuclearwinter.radiation.commands.CommandRadiationInfo;
 import com.ksit.nuclearwinter.radiation.handlers.ChunkEventHandler;
 import com.ksit.nuclearwinter.radiation.handlers.EntityEventHandler;
@@ -23,7 +25,6 @@ public class NuclearWinter {
 
 
     public static final String MOD_ID = "nuclearwinter";
-    // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public NuclearWinter(FMLJavaModLoadingContext context) {
@@ -43,6 +44,8 @@ public class NuclearWinter {
         MinecraftForge.EVENT_BUS.register(new WorldRadiationHandler());
         MinecraftForge.EVENT_BUS.register(new EntityEventHandler());
         MinecraftForge.EVENT_BUS.register(new CommandRadiationInfo());
+        MinecraftForge.EVENT_BUS.register(new RightClickItem());
+        ModEffects.EFFECTS.register(modBus);
 
     }
 

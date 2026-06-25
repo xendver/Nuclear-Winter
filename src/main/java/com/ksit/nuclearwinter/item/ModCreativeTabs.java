@@ -30,6 +30,10 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.RAW_URANIUM.get());
                                 output.accept(ModItems.RAW_LEAD.get());
 
+                                //Еда
+                                output.accept(ModItems.POTASSUIM_IODIDE.get());
+                                output.accept(ModItems.RAD_AWAY.get());
+                                output.accept(ModItems.CHELATOR.get());
 
                                 //Блоки
                                 output.accept(ModBlocks.RAW_URANIUM_BLOCK.get());
