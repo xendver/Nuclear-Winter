@@ -5,6 +5,8 @@ import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
 import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
+import com.ksit.nuclearwinter.item.custom.BlueprintItem;
+import com.ksit.nuclearwinter.item.custom.HammerItem;
 import com.ksit.nuclearwinter.item.custom.ItemGeigerCounter;
 import com.ksit.nuclearwinter.item.food.Chelator;
 import com.ksit.nuclearwinter.item.food.PotassiumIodide;
@@ -57,6 +59,38 @@ public class ModItems {
             );
 
     //Крафтовые предметы
+    public static final RegistryObject<Item> HAMMER =
+            ITEMS.register("hammer",
+                    () -> new HammerItem(
+                            new Item.Properties()
+                                    .durability(32)
+                    )
+            );
+
+    public static final RegistryObject<Item> NUCLEAR_FILTER_BLUEPRINT =
+            ITEMS.register(
+                    "nuclear_filter_blueprint",
+                    () -> new BlueprintItem(
+                            new Item.Properties().stacksTo(1)
+                    )
+            );
+
+    public static final RegistryObject<Item> MICROREACTOR_BLUEPRINT =
+            ITEMS.register(
+                    "microreactor_blueprint",
+                    () -> new BlueprintItem(
+                            new Item.Properties().stacksTo(1)
+                    )
+            );
+
+    public static final RegistryObject<Item> FUEL_ROD =
+            ITEMS.register(
+                    "fuel_rod",
+                    () -> new Item(
+                            new Item.Properties()
+                    )
+            );
+
     public static final RegistryObject<Item> LEAD_PLATE =
             ITEMS.register(
                     "lead_plate",

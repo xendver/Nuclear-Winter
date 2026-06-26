@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "H": {
+      "item": "nuclearwinter:hermetic_gasket"
+    },
+    "F": {
+      "item": "nuclearwinter:filter"
+    },
+    "U": {
+      "item": "nuclearwinter:uranium_steel"
+    },
+    "B": {
+      "item": "nuclearwinter:nuclear_filter_blueprint"
+    }
+  },
+  "pattern": [
+    "HFH",
+    "UFU",
+    " B "
+  ],
+  "result": {
+    "item": "nuclearwinter:nuclear_filter"
+  }
+}

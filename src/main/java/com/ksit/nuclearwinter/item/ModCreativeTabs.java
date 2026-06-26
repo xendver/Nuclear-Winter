@@ -51,6 +51,7 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.LEAD_INGOT.get());
 
                                 //Крафтовые предметы
+                                output.accept(ModItems.HAMMER.get());
                                 output.accept(ModItems.LEAD_PLATE.get());
                                 output.accept(ModItems.LEAD_NUGGET.get());
                                 output.accept(ModItems.FILTER.get());
@@ -59,6 +60,9 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.MICROREACTOR.get());
                                 output.accept(ModItems.URANIUM_STEEL.get());
                                 output.accept(ModItems.NUCLEAR_FILTER.get());
+                                output.accept(ModItems.FUEL_ROD.get());
+                                output.accept(ModItems.NUCLEAR_FILTER_BLUEPRINT.get());
+                                output.accept(ModItems.MICROREACTOR_BLUEPRINT.get());
 
                                 // Броня
                                 //tier1

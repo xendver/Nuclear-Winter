@@ -1,5 +1,6 @@
 package com.ksit.nuclearwinter.radiation.registry;
 
+import com.ksit.nuclearwinter.effect.ModEffects;
 import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
@@ -69,7 +70,7 @@ public final class ResistanceRegistry {
 
         // проверка брони на игроке
         if (entity instanceof Player player) {
-            ProtectionData armorProtection = getPlayerArmorProtection(player);
+            ProtectionData armorProtection = getPlayerProtection(player);
             if (armorProtection != NO_PROTECTION) return armorProtection;
         }
 
@@ -98,7 +99,7 @@ public final class ResistanceRegistry {
         return getProtectionData(entity).doseMultiplier() == 0f;
     }
 
-    private static ProtectionData getPlayerArmorProtection(Player player) {
+    private static ProtectionData getPlayerProtection(Player player) {
 
         if (isWearingFullSet(player, ArkArmorItem.class)) {
             return new ProtectionData(0.0001f, 0.002f);

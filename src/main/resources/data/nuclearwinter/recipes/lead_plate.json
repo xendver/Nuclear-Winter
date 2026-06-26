@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HI ",
+    "   ",
+    "   "
+  ],
+  "key": {
+    "H": {
+      "item": "nuclearwinter:hammer"
+    },
+    "I": {
+      "item": "nuclearwinter:lead_ingot"
+    }
+  },
+  "result": {
+    "item": "nuclearwinter:lead_plate"
+  }
+}

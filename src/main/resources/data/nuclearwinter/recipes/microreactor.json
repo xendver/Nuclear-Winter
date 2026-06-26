@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "nuclearwinter:fuel_rod"
+    },
+    "U": {
+      "item": "nuclearwinter:uranium_steel"
+    },
+    "C": {
+      "item": "nuclearwinter:radio_absorbing_composite"
+    },
+    "B": {
+      "item": "nuclearwinter:microreactor_blueprint"
+    }
+  },
+  "pattern": [
+    "UFU",
+    "UFU",
+    "CBC"
+  ],
+  "result": {
+    "item": "nuclearwinter:microreactor"
+  }
+}
