@@ -1,6 +1,7 @@
 package com.ksit.nuclearwinter.item.food;
 
 import com.ksit.nuclearwinter.effect.ModEffects;
+import com.ksit.nuclearwinter.effect.illness.StageOne;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,16 @@ public class Chelator extends Item {
         ItemStack result = super.finishUsingItem(stack, level, entity);
 
         if (!level.isClientSide && entity instanceof Player player) {
+
+            if (player.hasEffect(ModEffects.STAGE_ONE.get())) {
+                StageOne.clear(entity);
+            }
+            if (player.hasEffect(ModEffects.IODINE_EFFECT.get())) {
+                Iodine.clear(entity);
+            }
+            if (player.hasEffect(ModEffects.ANTIRAD_EFFECT.get())) {
+                AntiRad.clear(entity);
+            }
 
             player.addEffect(
                     new MobEffectInstance(

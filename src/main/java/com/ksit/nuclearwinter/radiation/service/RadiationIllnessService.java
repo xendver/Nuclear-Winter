@@ -83,7 +83,7 @@ public class RadiationIllnessService {
                         ResistanceRegistry.ProtectionData protection = ResistanceRegistry.getProtectionData(living);
 
                         float playerMultiplier = protection.doseMultiplier();
-                        float playerIllnessDecay = protection.illnessDecayBonus();
+                        float playerIllnessDecay = protection.PlayerIllnessDecay();
 
 
                         // ПОЛУЧАЕМ КАПАБИЛИТИ ЛУЧЕВОЙ БОЛЕЗНИ
@@ -116,7 +116,7 @@ public class RadiationIllnessService {
 
         switch (stage) {
             case STAGE_1 -> {
-                if (!entity.hasEffect(ModEffects.RAD_AWAY_EFFECT.get())) {
+                if (!entity.hasEffect(ModEffects.ANTIRAD_EFFECT.get())) {
                     entity.addEffect(new MobEffectInstance(
                             ModEffects.STAGE_ONE.get(),
                             DURATION,

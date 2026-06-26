@@ -1,5 +1,6 @@
 package com.ksit.nuclearwinter.radiation.registry;
 
+import com.ksit.nuclearwinter.effect.ModEffects;
 import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
@@ -18,19 +19,19 @@ public final class ResistanceRegistry {
 
     public static final class ProtectionData{
         private final float doseMultiplier;
-        private final float illnessDecayBonus;
+        private final float PlayerIllnessDecay;
 
-        public ProtectionData(float doseMultiplier, float illnessDecayBonus){
+        public ProtectionData(float doseMultiplier, float PlayerIllnessDecay){
             this.doseMultiplier = Math.max(0f, doseMultiplier);
-            this.illnessDecayBonus = Math.max(0f, illnessDecayBonus);
+            this.PlayerIllnessDecay = Math.max(0f, PlayerIllnessDecay);
         }
 
         public float doseMultiplier() {
             return doseMultiplier;
         }
 
-        public float illnessDecayBonus() {
-            return illnessDecayBonus;
+        public float PlayerIllnessDecay() {
+            return PlayerIllnessDecay;
         }
     }
 
@@ -67,9 +68,9 @@ public final class ResistanceRegistry {
 
     public static ProtectionData getProtectionData(Entity entity) {
 
-        // проверка брони на игроке
+        // проверка брони и эффектов на игроке
         if (entity instanceof Player player) {
-            ProtectionData armorProtection = getPlayerArmorProtection(player);
+            ProtectionData armorProtection = getPlayerProtection(player);
             if (armorProtection != NO_PROTECTION) return armorProtection;
         }
 
@@ -91,32 +92,50 @@ public final class ResistanceRegistry {
         return getProtectionData(entity).doseMultiplier();
     }
     public static float getIllnessDecayBonus(Entity entity) {
-        return getProtectionData(entity).illnessDecayBonus;
+        return getProtectionData(entity).PlayerIllnessDecay;
     }
 
     public static boolean isImmune(Entity entity) {
         return getProtectionData(entity).doseMultiplier() == 0f;
     }
 
-    private static ProtectionData getPlayerArmorProtection(Player player) {
+    private static ProtectionData getPlayerProtection(Player player) {
+
+        float NewDoseMultiplier = 1f;
+        float NewPlayerIllnessDecay = 0f;
 
         if (isWearingFullSet(player, ArkArmorItem.class)) {
-            return new ProtectionData(0.0001f, 0.002f);
+            NewDoseMultiplier = 0.0001f;
+            NewPlayerIllnessDecay += 2f;
         }
 
         if (isWearingFullSet(player, HazmatArmorItem.class)) {
-            return new ProtectionData(0.20f, 0.0003f);
+            NewDoseMultiplier = 0.20f;
+            NewPlayerIllnessDecay += 0.3f;
         }
 
         if (isWearingFullSet(player, MOPPArmorItem.class)) {
-            return new ProtectionData(0.55f, 0.00005f);
+            NewDoseMultiplier = 0.55f;
+            NewPlayerIllnessDecay += 0.05f;
         }
 
         if (isWearingFullSet(player, RaggedArmorItem.class)) {
-            return new ProtectionData(0.85f, 0.0f);
+            NewDoseMultiplier = 0.85f;
         }
 
-        return NO_PROTECTION;
+        if (player.hasEffect(ModEffects.IODINE_EFFECT.get())){
+            NewPlayerIllnessDecay += 1;
+        }
+
+        if (player.hasEffect(ModEffects.ANTIRAD_EFFECT.get())){
+            NewPlayerIllnessDecay += 5;
+        }
+
+        if (player.hasEffect(ModEffects.CHELATOR_EFFECT.get())){
+            NewPlayerIllnessDecay += 20;
+        }
+
+        return new ProtectionData(NewDoseMultiplier, NewPlayerIllnessDecay);
     }
 
     private static boolean isWearingFullSet(Player player, Class<?> armorClass) {

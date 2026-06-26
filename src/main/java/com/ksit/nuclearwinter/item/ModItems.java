@@ -7,8 +7,8 @@ import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
 import com.ksit.nuclearwinter.item.armor.RaggedArmorItem;
 import com.ksit.nuclearwinter.item.custom.ItemGeigerCounter;
 import com.ksit.nuclearwinter.item.food.Chelator;
-import com.ksit.nuclearwinter.item.food.PotassiumIodide;
-import com.ksit.nuclearwinter.item.food.RadAway;
+import com.ksit.nuclearwinter.item.food.Iodine;
+import com.ksit.nuclearwinter.item.food.AntiRad;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
@@ -125,12 +125,12 @@ public class ModItems {
     public static final RegistryObject<Item> POTASSUIM_IODIDE =
             ITEMS.register(
                     "potassium_iodide",
-                    PotassiumIodide::new
+                    Iodine::new
             );
     public static final RegistryObject<Item> RAD_AWAY =
             ITEMS.register(
                     "rad_away",
-                    RadAway::new
+                    AntiRad::new
             );
     public static final RegistryObject<Item> CHELATOR =
             ITEMS.register(

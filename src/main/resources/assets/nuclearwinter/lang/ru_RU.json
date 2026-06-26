@@ -36,15 +36,15 @@
   "item.nuclearwinter.uranium_steel": "Урановая сталь",
   "item.nuclearwinter.nuclear_filter": "Ядерный фильтр",
   "item.nuclearwinter.microreactor": "Микрореактор",
-  "item.nuclearwinter.potassium_iodide": "Йодид калия",
-  "item.nuclearwinter.rad_away": "Антирадин",
+  "item.nuclearwinter.iodine": "Йодид калия",
+  "item.nuclearwinter.antirad": "Антирадин",
   "item.nuclearwinter.chelator": "Хелатор",
 
   "effect.nuclearwinter.stage_one": "Облучение I",
   "effect.nuclearwinter.stage_two": "Облучение II",
   "effect.nuclearwinter.stage_three": "Облучение III",
   "effect.nuclearwinter.stage_four": "Облучение IV",
-  "effect.nuclearwinter.potassium_iodide_effect": "Йодид калия",
-  "effect.nuclearwinter.rad_away_effect": "Антирадин",
+  "effect.nuclearwinter.iodine_effect": "Йодид Калия",
+  "effect.nuclearwinter.antirad_effect": "Антирадин",
   "effect.nuclearwinter.chelator_effect": "Хелатор"
 }

@@ -36,15 +36,15 @@
   "item.nuclearwinter.uranium_steel": "Uranium Steel",
   "item.nuclearwinter.nuclear_filter": "Nuclear Filter",
   "item.nuclearwinter.microreactor": "Microreactor",
-  "item.nuclearwinter.potassium_iodide": "Potassium Iodide",
-  "item.nuclearwinter.rad_away": "Rad Away",
+  "item.nuclearwinter.iodine": "Potassium Iodide",
+  "item.nuclearwinter.antirad": "Rad Away",
   "item.nuclearwinter.chelator": "Chelator",
 
   "effect.nuclearwinter.stage_one": "Irradiation I",
   "effect.nuclearwinter.stage_two": "Irradiation II",
   "effect.nuclearwinter.stage_three": "Irradiation III",
   "effect.nuclearwinter.stage_four": "Irradiation IV",
-  "effect.nuclearwinter.potassium_iodide_effect": "Potassium Iodide",
-  "effect.nuclearwinter.rad_away_effect": "Rad Away",
+  "effect.nuclearwinter.iodine_effect": "Iodine",
+  "effect.nuclearwinter.antirad_effect": "Antirad",
   "effect.nuclearwinter.chelator_effect": "Chelator"
 }
