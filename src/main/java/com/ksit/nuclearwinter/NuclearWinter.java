@@ -2,6 +2,7 @@ package com.ksit.nuclearwinter;
 
 import com.ksit.nuclearwinter.events.BlockBreakListener;
 import com.ksit.nuclearwinter.events.BlockPlaceListener;
+import com.ksit.nuclearwinter.events.RightClickBlockListener;
 import com.ksit.nuclearwinter.events.TickListener;
 import com.ksit.nuclearwinter.item.ModItems;
 import com.ksit.nuclearwinter.network.PacketHandler;
@@ -48,6 +49,7 @@ public class NuclearWinter {
         MinecraftForge.EVENT_BUS.register(new CommandRadiationInfo());
         MinecraftForge.EVENT_BUS.register(new BlockPlaceListener());
         MinecraftForge.EVENT_BUS.register(new BlockBreakListener());
+        MinecraftForge.EVENT_BUS.register(new RightClickBlockListener());
         MinecraftForge.EVENT_BUS.register(new TickListener());
     }
 

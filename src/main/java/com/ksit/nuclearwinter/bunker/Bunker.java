@@ -3,6 +3,8 @@ package com.ksit.nuclearwinter.bunker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
@@ -79,7 +81,7 @@ public class Bunker {
     }
 
     public boolean contains(BlockPos pos) {
-        return innerBlocks.contains(pos);
+        return innerBlocks.contains(pos) || shellBlocks.contains(pos);
     }
 
     public BunkerData toData() {
@@ -93,7 +95,6 @@ public class Bunker {
     }
 
     private BFSResult floodFill(ServerLevel level) {
-
         Set<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> queue = new LinkedList<>();
 
@@ -103,12 +104,22 @@ public class Bunker {
         boolean sealedLocal = true;
 
         BlockPos start = controllerPos.above();
+
         queue.add(start);
         visited.add(start);
 
         while (!queue.isEmpty()) {
 
             BlockPos current = queue.poll();
+
+            BlockState currentState = level.getBlockState(current);
+
+            if (isShell(currentState) || isDoor(currentState)) {
+                shell.add(current);
+                continue;
+            }
+
+            // остальное, внутренняя зона
             inner.add(current);
 
             if (inner.size() > MAX_BLOCKS) {
@@ -127,17 +138,20 @@ public class Bunker {
                     continue;
                 }
 
-                BlockState state = level.getBlockState(next);
-
-                if (state.isAir()) {
-                    queue.add(next);
-                } else {
-                    shell.add(next);
-                }
+                queue.add(next);
             }
         }
 
         return new BFSResult(inner, shell, sealedLocal);
+    }
+
+
+    private boolean isShell(BlockState state) {
+        return state.is(Blocks.IRON_BLOCK);
+    }
+
+    private boolean isDoor(BlockState state) {
+        return state.getBlock() instanceof DoorBlock && !state.getValue(DoorBlock.OPEN);
     }
 
     private boolean isOutOfBounds(BlockPos pos) {
