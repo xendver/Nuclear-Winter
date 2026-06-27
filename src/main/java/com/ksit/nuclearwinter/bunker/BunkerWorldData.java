@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,49 +14,53 @@ public class BunkerWorldData extends SavedData {
 
     private final Map<UUID, BunkerData> bunkers = new HashMap<>();
 
-    // ===== GET =====
-
+    //GET
     public Map<UUID, BunkerData> getBunkers() {
-        return bunkers;
+        return Map.copyOf(bunkers);
     }
 
-    public void add(BunkerData data) {
-        bunkers.put(data.id, data);
+    public BunkerData get(UUID id) {
+        return bunkers.get(id);
+    }
+
+    public void put(BunkerData bunker) {
+        if (bunker == null || bunker.id == null) return;
+        bunkers.put(bunker.id, bunker);
         setDirty();
     }
 
     public void remove(UUID id) {
+        if (id == null) return;
         bunkers.remove(id);
         setDirty();
     }
 
-    // ===== SAVE =====
+    public boolean contains(UUID id) {
+        return bunkers.containsKey(id);
+    }
 
+    //SAVE
     @Override
-    public CompoundTag save(CompoundTag tag) {
-
+    public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
         ListTag list = new ListTag();
 
-        for (BunkerData data : bunkers.values()) {
-            list.add(data.save());
+        for (BunkerData bunker : bunkers.values()) {
+            list.add(bunker.save());
         }
 
         tag.put("bunkers", list);
-
         return tag;
     }
 
-    // ===== LOAD =====
-
+    //LOAD
     public static BunkerWorldData load(CompoundTag tag) {
 
         BunkerWorldData data = new BunkerWorldData();
-
         ListTag list = tag.getList("bunkers", Tag.TAG_COMPOUND);
 
         for (Tag t : list) {
-            CompoundTag ct = (CompoundTag) t;
-            BunkerData bunker = BunkerData.load(ct);
+            CompoundTag compoundTag = (CompoundTag) t;
+            BunkerData bunker = BunkerData.load(compoundTag);
             data.bunkers.put(bunker.id, bunker);
         }
 

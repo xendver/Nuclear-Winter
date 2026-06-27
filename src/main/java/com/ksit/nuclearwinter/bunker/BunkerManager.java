@@ -9,178 +9,135 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 public class BunkerManager {
-    private static final Map<UUID, Bunker> bunkers = new HashMap<>();
 
+    private static final Map<UUID, Bunker> bunkers = new HashMap<>();
     private static final Map<ChunkPos, Set<UUID>> chunkIndex = new HashMap<>();
 
 
     // Добавляем бункер в мир
     public static void addBunker(Bunker bunker) {
-
         bunkers.put(bunker.getId(), bunker);
-
-        System.out.println("Добавили бункер");
-
         indexBunker(bunker);
-    }
-
-    public static void onBlockChanged(ServerLevel level, BlockPos pos) {
-
-        ChunkPos chunk = new ChunkPos(pos);
-
-        Set<UUID> near = chunkIndex.get(chunk);
-        if (near == null) return;
-
-        for (UUID id : near) {
-
-            Bunker bunker = bunkers.get(id);
-            if (bunker == null) continue;
-
-            if(bunker.getControllerPos().equals(pos)) {
-                deleteBunker(level, pos);
-                break;
-            }
-
-            level.getServer().execute(() -> {
-                bunker.recalculate(level);
-            });
-
-            reindex(bunker);
-
-        }
-    }
-
-
-    private static void reindex(Bunker bunker) {
-
-        for (Set<UUID> list : chunkIndex.values()) {
-            list.remove(bunker.getId());
-        }
-
-        indexBunker(bunker);
-    }
-
-    public static List<Bunker> getBunkersAt(BlockPos pos) {
-
-        ChunkPos chunk = new ChunkPos(pos);
-
-        Set<UUID> ids =
-                chunkIndex.get(chunk);
-
-
-        if (ids == null)
-            return List.of();
-
-
-        return ids.stream()
-                .map(bunkers::get)
-                .toList();
-    }
-
-    public static boolean isPlayerInBunker(ServerPlayer player) {
-
-        BlockPos pos = player.blockPosition();
-
-        for (Bunker bunker : bunkers.values()) {
-            if (bunker.contains(pos) && bunker.isSealed()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     // Создаем бункер
     public static void createBunker(ServerLevel level, BlockPos controllerPos) {
-
         Bunker bunker = new Bunker(controllerPos);
         bunker.recalculate(level);
+
         addBunker(bunker);
+        save(level, bunker);
+    }
 
-        BunkerWorldData data = BunkerWorldDataProvider.get(level);
-
-        data.add(new BunkerData(
-                bunker.getId(),
-                controllerPos,
-                bunker.isSealed()
-        ));
-
+    // Обновляем бункер
+    private static void updateBunker(ServerLevel level, Bunker bunker) {
+        bunker.recalculate(level);
+        reindex(bunker);
+        save(level, bunker);
     }
 
     // Удаляем бункер
-    public static void deleteBunker(ServerLevel level, BlockPos controllerPos) {
+    public static void deleteBunker(ServerLevel level, UUID bunkerId) {
+        Bunker bunker = bunkers.remove(bunkerId);
+        if (bunker == null) return;
 
+        // remove from saved data
+        BunkerWorldData data = BunkerWorldDataProvider.get(level);
+        data.remove(bunkerId);
+
+        // clean chunk index
+        unindexBunker(bunkerId, bunker);
+    }
+
+    // Сохраняем на диск
+    private static void save(ServerLevel level, Bunker bunker) {
+        BunkerWorldData data = BunkerWorldDataProvider.get(level);
+        data.put(bunker.toData());
+    }
+
+    // Загрузка бункеров с диска
+    public static void loadAll(ServerLevel level) {
         BunkerWorldData data = BunkerWorldDataProvider.get(level);
 
-        UUID targetId = null;
+        for (BunkerData bunkerData : data.getBunkers().values()) {
+            Bunker bunker = new Bunker(bunkerData);
 
-        // 1. ищем бункер по controllerPos
-        for (BunkerData bd : data.getBunkers().values()) {
+            bunkers.put(bunkerData.id, bunker);
+            indexBunker(bunker);
+        }
+    }
 
-            if (bd.controllerPos.equals(controllerPos)) {
-                targetId = bd.id;
-                break;
+    public static void onBlockChanged(ServerLevel level, BlockPos pos) {
+        ChunkPos chunk = new ChunkPos(pos);
+        Set<UUID> affected = chunkIndex.get(chunk);
+
+        if (affected == null || affected.isEmpty()) return;
+        // копия чтобы избежать concurrent modification
+        List<UUID> targets = new ArrayList<>(affected);
+
+
+        for (UUID id : targets) {
+            Bunker bunker = bunkers.get(id);
+            if (bunker == null) continue;
+
+            // если сломан контроллер — удаляем сразу
+            if (pos.equals(bunker.getControllerPos())) {
+                deleteBunker(level, id);
+                continue;
             }
+
+            //Обновляем бункер
+            level.getServer().execute(() -> updateBunker(level, bunker));
         }
+    }
 
-        if (targetId == null) {
-            System.out.println("Bunker not found at: " + controllerPos);
-            return;
-        }
-
-        // 2. удаляем из runtime
-        Bunker removed = bunkers.remove(targetId);
-
-        // 3. удаляем из saved data
-        data.remove(targetId);
-
-        // 4. чистим chunk index
-        if (removed != null) {
-            for (BlockPos pos : removed.getShellBlocks()) {
-
-                ChunkPos chunk = new ChunkPos(pos);
-
-                Set<UUID> set = chunkIndex.get(chunk);
-
-                if (set != null) {
-                    set.remove(targetId);
-
-                    if (set.isEmpty()) {
-                        chunkIndex.remove(chunk);
-                    }
-                }
-            }
-        }
-
-        System.out.println("Deleted bunker at: " + controllerPos);
+    private static void reindex(Bunker bunker) {
+        unindexBunker(bunker.getId(), bunker);
+        indexBunker(bunker);
     }
 
     //Расскладываем бункер по чанкам
     private static void indexBunker(Bunker bunker) {
-        // Берем все стены бункера и записываем в каком они чанке
+        UUID id = bunker.getId();
+
         for (BlockPos pos : bunker.getShellBlocks()) {
-
-            ChunkPos chunk = new ChunkPos(pos);
-
             chunkIndex
-                    .computeIfAbsent(chunk, k -> new HashSet<>())
-                    .add(bunker.getId());
+                    .computeIfAbsent(new ChunkPos(pos), k -> new HashSet<>())
+                    .add(id);
         }
     }
 
-    public static void loadAll(ServerLevel level) {
+    private static void unindexBunker(UUID id, Bunker bunker) {
+        Set<ChunkPos> affectedChunks = new HashSet<>();
 
-        BunkerWorldData data = BunkerWorldDataProvider.get(level);
-
-        for (BunkerData bd : data.getBunkers().values()) {
-
-            Bunker bunker = new Bunker(bd.controllerPos, bd.id);
-
-            bunker.recalculate(level);
-            bunkers.put(bd.id, bunker);
-            indexBunker(bunker);
+        // 1. Собираем уникальные чанки (убираем дубли)
+        for (BlockPos pos : bunker.getShellBlocks()) {
+            affectedChunks.add(new ChunkPos(pos));
         }
 
-        System.out.println("Loaded bunkers: " + bunkers.size());
+        // 2. Работаем уже только с уникальными чанками
+        for (ChunkPos chunk : affectedChunks) {
+            Set<UUID> set = chunkIndex.get(chunk);
+            if (set == null) continue;
+
+            set.remove(id);
+
+            if (set.isEmpty()) {
+                chunkIndex.remove(chunk);
+            }
+        }
     }
+
+    // Возвращает значение в бункере ли игрок
+    public static boolean isPlayerInBunker(ServerPlayer player) {
+        BlockPos pos = player.blockPosition();
+
+        for (Bunker bunker : bunkers.values()) {
+            if (bunker.isSealed() && bunker.contains(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
