@@ -4,11 +4,14 @@ import com.ksit.nuclearwinter.radiation.api.IRadiationIllness;
 import com.ksit.nuclearwinter.radiation.api.IllnessStage;
 import net.minecraft.nbt.CompoundTag;
 
-public class RadiationIllnessImpl implements IRadiationIllness {
+public class RadiationIllness implements IRadiationIllness {
 
     private float radiationPoints = 0f;
 
-    @Override public float getRadiationPoints() { return radiationPoints; }
+    @Override
+    public float getRadiationPoints() {
+        return radiationPoints;
+    }
 
     @Override
     public void setRadiationPoints(float points) {

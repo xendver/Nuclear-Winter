@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 // Провайдер прикрепляет RadiationImpl к ItemStack через систему Capability
 public class ItemRadiationProvider implements ICapabilitySerializable<CompoundTag> {
 
-    private final RadiationImpl instance = new RadiationImpl();
+    private final Radiation instance = new Radiation();
     private final LazyOptional<IRadiation> optional = LazyOptional.of(() -> instance);
 
     @Override

@@ -19,7 +19,8 @@ public class BlockRadiationStorage extends SavedData {
     // Позиция блока -> [initialPower, radius, decayPerChunk]
     private final Map<BlockPos, float[]> radiationMap = new HashMap<>();
 
-    public BlockRadiationStorage() {}
+    public BlockRadiationStorage() {
+    }
 
     // Получение или создание хранилище для данного мира
     public static BlockRadiationStorage get(ServerLevel level) {
@@ -38,7 +39,7 @@ public class BlockRadiationStorage extends SavedData {
 
     // Запись свойства радиации для блока по позиции
     public void setRadiation(BlockPos pos, float power, float radius, float decay) {
-        radiationMap.put(pos, new float[]{ power, radius, decay });
+        radiationMap.put(pos, new float[]{power, radius, decay});
         setDirty();
     }
 
@@ -65,13 +66,13 @@ public class BlockRadiationStorage extends SavedData {
         for (Map.Entry<BlockPos, float[]> entry : radiationMap.entrySet()) {
             CompoundTag tag = new CompoundTag();
             // Сохранение координат блока
-            tag.putInt("x",     entry.getKey().getX());
-            tag.putInt("y",     entry.getKey().getY());
-            tag.putInt("z",     entry.getKey().getZ());
+            tag.putInt("x", entry.getKey().getX());
+            tag.putInt("y", entry.getKey().getY());
+            tag.putInt("z", entry.getKey().getZ());
             // Сохранение трёх значений радиации
-            tag.putFloat("power",  entry.getValue()[0]);
+            tag.putFloat("power", entry.getValue()[0]);
             tag.putFloat("radius", entry.getValue()[1]);
-            tag.putFloat("decay",  entry.getValue()[2]);
+            tag.putFloat("decay", entry.getValue()[2]);
             list.add(tag);
         }
         compound.put("blocks", list);

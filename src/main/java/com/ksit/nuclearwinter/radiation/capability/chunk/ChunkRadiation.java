@@ -4,7 +4,7 @@ import com.ksit.nuclearwinter.radiation.api.IChunkRadiation;
 import net.minecraft.nbt.CompoundTag;
 
 // IChunkRadiation, хранение уровня радиации одного чанка
-public class ChunkRadiationImpl implements IChunkRadiation {
+public class ChunkRadiation implements IChunkRadiation {
 
     private float radiationPollutionLevel = 0f;
     private float radiationActivityLevel = 0f;
@@ -28,7 +28,9 @@ public class ChunkRadiationImpl implements IChunkRadiation {
     }
 
     @Override
-    public float getRadiationActivityLevel() { return this.radiationActivityLevel; }
+    public float getRadiationActivityLevel() {
+        return this.radiationActivityLevel;
+    }
 
     @Override
     public void setRadiationActivityLevel(float level) {
@@ -37,7 +39,7 @@ public class ChunkRadiationImpl implements IChunkRadiation {
     }
 
     @Override
-    public void addRadiationActivity(float amount){
+    public void addRadiationActivity(float amount) {
         this.radiationActivityLevel = Math.max(0f, this.radiationActivityLevel + amount);
     }
 

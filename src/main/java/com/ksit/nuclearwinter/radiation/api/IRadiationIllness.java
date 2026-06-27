@@ -8,12 +8,15 @@ public interface IRadiationIllness {
 
     // Накопленные points облучения
     float getRadiationPoints();
-    void  setRadiationPoints(float points);
-    void  addRadiationPoints(float amount); // amount может быть отрицательным (лечение)
+
+    void setRadiationPoints(float points);
+
+    void addRadiationPoints(float amount); // amount может быть отрицательным (лечение)
 
     // Текущая стадия болезни (вычисляется из points)
     IllnessStage getStage();
 
     CompoundTag serializeNBT();
-    void        deserializeNBT(CompoundTag nbt);
+
+    void deserializeNBT(CompoundTag nbt);
 }

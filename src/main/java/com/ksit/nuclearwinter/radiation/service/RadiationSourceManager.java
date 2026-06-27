@@ -1,6 +1,6 @@
 package com.ksit.nuclearwinter.radiation.service;
 
-import com.ksit.nuclearwinter.radiation.capability.source.RadiationImpl;
+import com.ksit.nuclearwinter.radiation.capability.source.Radiation;
 import com.ksit.nuclearwinter.radiation.storage.BlockRadiationStorage;
 import com.ksit.nuclearwinter.radiation.util.ActiveSource;
 import net.minecraft.core.BlockPos;
@@ -20,7 +20,7 @@ public class RadiationSourceManager {
         sourceCache.clear();
     }
 
-    public void addOrUpdateSource(BlockPos pos, RadiationImpl radiation) {
+    public void addOrUpdateSource(BlockPos pos, Radiation radiation) {
         if (pos == null || radiation == null) {
             return;
         }
@@ -60,7 +60,7 @@ public class RadiationSourceManager {
             BlockPos pos = entry.getKey();
             float[] values = entry.getValue();
 
-            RadiationImpl radiation = new RadiationImpl(
+            Radiation radiation = new Radiation(
                     values[0],
                     values[1],
                     values[2]

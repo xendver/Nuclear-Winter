@@ -12,19 +12,21 @@ import org.jetbrains.annotations.Nullable;
 
 public class RadiationIllnessProvider implements ICapabilitySerializable<CompoundTag> {
 
-    private final RadiationIllnessImpl instance = new RadiationIllnessImpl();
-    private final LazyOptional<IRadiationIllness> optional =
-            LazyOptional.of(() -> instance);
+    private final RadiationIllness instance = new RadiationIllness();
+    private final LazyOptional<IRadiationIllness> optional = LazyOptional.of(() -> instance);
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(
-            @NotNull Capability<T> cap, @Nullable Direction side) {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return RadiationCapability.RADIATION_ILLNESS.orEmpty(cap, optional);
     }
 
     @Override
-    public CompoundTag serializeNBT() { return instance.serializeNBT(); }
+    public CompoundTag serializeNBT() {
+        return instance.serializeNBT();
+    }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) { instance.deserializeNBT(nbt); }
+    public void deserializeNBT(CompoundTag nbt) {
+        instance.deserializeNBT(nbt);
+    }
 }

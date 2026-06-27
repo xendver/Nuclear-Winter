@@ -7,16 +7,20 @@ import net.minecraft.nbt.CompoundTag;
 public interface IRadiation {
 
     float getInitialPower();
-    void  setInitialPower(float power);
+
+    void setInitialPower(float power);
 
     // Радиус в чанках
     float getRadius();
-    void  setRadius(float radius);
+
+    void setRadius(float radius);
 
     // Потеря силы радиации за каждый чанк расстояния
     float getDecayPerChunk();
-    void  setDecayPerChunk(float decay);
+
+    void setDecayPerChunk(float decay);
 
     CompoundTag serializeNBT();
-    void        deserializeNBT(CompoundTag nbt);
+
+    void deserializeNBT(CompoundTag nbt);
 }

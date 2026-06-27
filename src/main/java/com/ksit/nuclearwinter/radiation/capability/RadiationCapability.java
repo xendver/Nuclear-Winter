@@ -11,14 +11,17 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 public class RadiationCapability {
 
     public static final Capability<IRadiation> RADIATION_SOURCE =
-            CapabilityManager.get(new CapabilityToken<>() {});
+            CapabilityManager.get(new CapabilityToken<>() {
+            });
 
     public static final Capability<IChunkRadiation> CHUNK_RADIATION =
-            CapabilityManager.get(new CapabilityToken<>() {});
+            CapabilityManager.get(new CapabilityToken<>() {
+            });
 
     // Capability накопленного облучения (прикрепляется к player и entity)
     public static final Capability<IRadiationIllness> RADIATION_ILLNESS =
-            CapabilityManager.get(new CapabilityToken<>() {});
+            CapabilityManager.get(new CapabilityToken<>() {
+            });
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(IRadiation.class);

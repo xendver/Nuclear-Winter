@@ -1,6 +1,5 @@
 package com.ksit.nuclearwinter.radiation.registry;
 
-import com.ksit.nuclearwinter.effect.ModEffects;
 import com.ksit.nuclearwinter.item.armor.ArkArmorItem;
 import com.ksit.nuclearwinter.item.armor.HazmatArmorItem;
 import com.ksit.nuclearwinter.item.armor.MOPPArmorItem;
@@ -15,13 +14,11 @@ import java.util.Map;
 // Классы энтити, которые устойчивы к радиации (в будущем)
 public final class ResistanceRegistry {
 
-    private ResistanceRegistry() {}
-
-    public static final class ProtectionData{
+    public static final class ProtectionData {
         private final float doseMultiplier;
         private final float illnessDecayBonus;
 
-        public ProtectionData(float doseMultiplier, float illnessDecayBonus){
+        public ProtectionData(float doseMultiplier, float illnessDecayBonus) {
             this.doseMultiplier = Math.max(0f, doseMultiplier);
             this.illnessDecayBonus = Math.max(0f, illnessDecayBonus);
         }
@@ -44,7 +41,7 @@ public final class ResistanceRegistry {
     // Регистрация частичной устойчивости
     // multiplier: 0.0 = иммунитет, 1.0 = без защиты, 0.5 = половина дозы
     public static void registerPartial(Class<? extends Entity> entityClass,
-                                      float multiplier) {
+                                       float multiplier) {
         entityProtection.put(entityClass, new ProtectionData(additional(multiplier), 0.0f));
     }
 
@@ -55,15 +52,12 @@ public final class ResistanceRegistry {
 
 
     public static void registerProtection(Class<? extends Entity> entityClass,
-                                          float doseMultiplier, float illnessDecayBonus){
+                                          float doseMultiplier, float illnessDecayBonus) {
         entityProtection.put(entityClass,
                 new ProtectionData(additional(doseMultiplier),
                         Math.max(0f, illnessDecayBonus)));
 
     }
-
-
-
 
 
     public static ProtectionData getProtectionData(Entity entity) {
@@ -75,8 +69,8 @@ public final class ResistanceRegistry {
         }
 
         // проверка на зарегистрированную защиту по классу сущности
-        for (Map.Entry<Class<? extends Entity>, ProtectionData> entry : entityProtection.entrySet()){
-            if (entry.getKey().isInstance(entity)){
+        for (Map.Entry<Class<? extends Entity>, ProtectionData> entry : entityProtection.entrySet()) {
+            if (entry.getKey().isInstance(entity)) {
                 return entry.getValue();
             }
         }
@@ -85,12 +79,12 @@ public final class ResistanceRegistry {
     }
 
 
-
     // МНОЖИТЕЛЬ ДОЗЫ ДЛЯ ЭНТИТИ
     // Возвращает 0 если есть иммунитет, от 0 до 1 если частично есть, 1 если нет устойчивости
     public static float getDoseMultiplier(Entity entity) {
         return getProtectionData(entity).doseMultiplier();
     }
+
     public static float getIllnessDecayBonus(Entity entity) {
         return getProtectionData(entity).illnessDecayBonus;
     }
@@ -140,8 +134,9 @@ public final class ResistanceRegistry {
     }
 
 
-    private static float additional(float value) {return Math.max(0f, Math.min(1f, value));}
-
+    private static float additional(float value) {
+        return Math.max(0f, Math.min(1f, value));
+    }
 
 
 }

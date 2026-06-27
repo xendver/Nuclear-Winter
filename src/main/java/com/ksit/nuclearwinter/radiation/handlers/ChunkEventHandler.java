@@ -20,7 +20,7 @@ public class ChunkEventHandler {
     @SubscribeEvent
     public void onAttachChunkCapabilities(AttachCapabilitiesEvent<LevelChunk> event) {
         if (!event.getObject().getCapability(
-                RadiationCapability.CHUNK_RADIATION).isPresent()){
+                RadiationCapability.CHUNK_RADIATION).isPresent()) {
             event.addCapability(CAP_KEY, new ChunkRadiationProvider());
         }
     }
