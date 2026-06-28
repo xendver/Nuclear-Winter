@@ -45,20 +45,6 @@ public class AntiRad extends Item {
                             false
                     )
             );
-
-
-            // меняем capability
-//            player.getCapability(
-//                    ModCapabilities.PLAYER_DATA
-//            ).ifPresent(data -> {
-//
-//                data.setStage(true);
-//
-//                data.setStageTimer(
-//                        20 * 60 * 5
-//                );
-//
-//            });
         }
 
 
