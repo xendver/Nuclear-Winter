@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "nuclearwinter:potassium_iodide"
+      "item": "nuclearwinter:iodine"
     },
     "G": {
       "item": "minecraft:gold_ingot"
@@ -17,7 +17,7 @@
     "I  "
   ],
   "result": {
-    "item": "nuclearwinter:rad_away"
+    "item": "nuclearwinter:antirad"
   },
   "show_notification": true
 }
