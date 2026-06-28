@@ -36,8 +36,8 @@
   "item.nuclearwinter.uranium_steel": "Uranium Steel",
   "item.nuclearwinter.nuclear_filter": "Nuclear Filter",
   "item.nuclearwinter.microreactor": "Microreactor",
-  "item.nuclearwinter.iodine": "Potassium Iodide",
-  "item.nuclearwinter.antirad": "Rad Away",
+  "item.nuclearwinter.iodine": "Iodine",
+  "item.nuclearwinter.antirad": "AntiRad",
   "item.nuclearwinter.chelator": "Chelator",
 
   "effect.nuclearwinter.stage_one": "Irradiation I",

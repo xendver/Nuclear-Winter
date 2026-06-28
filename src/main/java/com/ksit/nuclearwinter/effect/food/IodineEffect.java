@@ -4,8 +4,8 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
-public class RadAwayEffect extends MobEffect {
-    public RadAwayEffect() {
+public class IodineEffect extends MobEffect {
+    public IodineEffect() {
         super(
                 MobEffectCategory.BENEFICIAL,
                 0x00FFFF

@@ -122,14 +122,14 @@ public class ModItems {
             );
 
     // Еда
-    public static final RegistryObject<Item> POTASSUIM_IODIDE =
+    public static final RegistryObject<Item> IODINE =
             ITEMS.register(
-                    "potassium_iodide",
+                    "iodine",
                     Iodine::new
             );
-    public static final RegistryObject<Item> RAD_AWAY =
+    public static final RegistryObject<Item> ANTIRAD =
             ITEMS.register(
-                    "rad_away",
+                    "antirad",
                     AntiRad::new
             );
     public static final RegistryObject<Item> CHELATOR =

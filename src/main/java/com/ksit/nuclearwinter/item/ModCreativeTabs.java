@@ -31,8 +31,8 @@ public final class ModCreativeTabs {
                                 output.accept(ModItems.RAW_LEAD.get());
 
                                 //Еда
-                                output.accept(ModItems.POTASSUIM_IODIDE.get());
-                                output.accept(ModItems.RAD_AWAY.get());
+                                output.accept(ModItems.IODINE.get());
+                                output.accept(ModItems.ANTIRAD.get());
                                 output.accept(ModItems.CHELATOR.get());
 
                                 //Блоки

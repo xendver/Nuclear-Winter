@@ -2,8 +2,8 @@ package com.ksit.nuclearwinter.effect;
 
 import com.ksit.nuclearwinter.NuclearWinter;
 import com.ksit.nuclearwinter.effect.food.ChelatorEffect;
-import com.ksit.nuclearwinter.effect.food.PotassiumIodideEffect;
-import com.ksit.nuclearwinter.effect.food.RadAwayEffect;
+import com.ksit.nuclearwinter.effect.food.IodineEffect;
+import com.ksit.nuclearwinter.effect.food.AntiRadEffect;
 import com.ksit.nuclearwinter.effect.illness.StageFour;
 import com.ksit.nuclearwinter.effect.illness.StageOne;
 import com.ksit.nuclearwinter.effect.illness.StageThree;
@@ -70,13 +70,13 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> IODINE_EFFECT =
             EFFECTS.register(
                     "iodine_effect",
-                    PotassiumIodideEffect::new
+                    IodineEffect::new
             );
 
     public static final RegistryObject<MobEffect> ANTIRAD_EFFECT =
             EFFECTS.register(
                     "antirad_effect",
-                    RadAwayEffect::new
+                    AntiRadEffect::new
             );
 
     public static final RegistryObject<MobEffect> CHELATOR_EFFECT =

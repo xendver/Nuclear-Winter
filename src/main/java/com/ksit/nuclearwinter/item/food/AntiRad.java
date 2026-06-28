@@ -9,6 +9,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+net.minecraft.client.gui.Gui;
 
 public class AntiRad extends Item {
     public AntiRad() {
@@ -27,7 +28,7 @@ public class AntiRad extends Item {
         ItemStack result = super.finishUsingItem(stack, level, entity);
 
         if (!level.isClientSide && entity instanceof Player player
-                && player.hasEffect(ModEffects.CHELATOR_EFFECT.get())) {
+                && !player.hasEffect(ModEffects.CHELATOR_EFFECT.get())) {
 
             if (player.hasEffect(ModEffects.STAGE_ONE.get())) {
                 StageOne.clear(entity);
