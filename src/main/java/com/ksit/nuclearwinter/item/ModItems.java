@@ -182,7 +182,7 @@ public class ModItems {
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_HELMET =
             ITEMS.register("ragged_armor_helmet",
                     () -> new RaggedArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.LEATHER,
                             ArmorItem.Type.HELMET,
                             new Item.Properties()
                     ));
@@ -190,7 +190,7 @@ public class ModItems {
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_CHESTPLATE =
             ITEMS.register("ragged_armor_chestplate",
                     () -> new RaggedArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.LEATHER,
                             ArmorItem.Type.CHESTPLATE,
                             new Item.Properties()
                     ));
@@ -198,7 +198,7 @@ public class ModItems {
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_LEGGINGS =
             ITEMS.register("ragged_armor_leggings",
                     () -> new RaggedArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.LEATHER,
                             ArmorItem.Type.LEGGINGS,
                             new Item.Properties()
                     ));
@@ -206,7 +206,7 @@ public class ModItems {
     public static final RegistryObject<RaggedArmorItem> RAGGED_ARMOR_BOOTS =
             ITEMS.register("ragged_armor_boots",
                     () -> new RaggedArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.LEATHER,
                             ArmorItem.Type.BOOTS,
                             new Item.Properties()
                     ));
@@ -215,7 +215,7 @@ public class ModItems {
     public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_HELMET =
             ITEMS.register("mopp_armor_helmet",
                     () -> new MOPPArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.IRON,
                             ArmorItem.Type.HELMET,
                             new Item.Properties()
                     ));
@@ -223,7 +223,7 @@ public class ModItems {
     public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_CHESTPLATE =
             ITEMS.register("mopp_armor_chestplate",
                     () -> new MOPPArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.IRON,
                             ArmorItem.Type.CHESTPLATE,
                             new Item.Properties()
                     ));
@@ -231,7 +231,7 @@ public class ModItems {
     public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_LEGGINGS =
             ITEMS.register("mopp_armor_leggings",
                     () -> new MOPPArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.IRON,
                             ArmorItem.Type.LEGGINGS,
                             new Item.Properties()
                     ));
@@ -239,7 +239,7 @@ public class ModItems {
     public static final RegistryObject<MOPPArmorItem> MOPP_ARMOR_BOOTS =
             ITEMS.register("mopp_armor_boots",
                     () -> new MOPPArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.IRON,
                             ArmorItem.Type.BOOTS,
                             new Item.Properties()
                     ));
@@ -281,7 +281,7 @@ public class ModItems {
     public static final RegistryObject<ArkArmorItem> ARK_ARMOR_HELMET =
             ITEMS.register("ark_armor_helmet",
                     () -> new ArkArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.NETHERITE,
                             ArmorItem.Type.HELMET,
                             new Item.Properties()
                     ));
@@ -289,7 +289,7 @@ public class ModItems {
     public static final RegistryObject<ArkArmorItem> ARK_ARMOR_CHESTPLATE =
             ITEMS.register("ark_armor_chestplate",
                     () -> new ArkArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.NETHERITE,
                             ArmorItem.Type.CHESTPLATE,
                             new Item.Properties()
                     ));
@@ -297,7 +297,7 @@ public class ModItems {
     public static final RegistryObject<ArkArmorItem> ARK_ARMOR_LEGGINGS =
             ITEMS.register("ark_armor_leggings",
                     () -> new ArkArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.NETHERITE,
                             ArmorItem.Type.LEGGINGS,
                             new Item.Properties()
                     ));
@@ -305,7 +305,7 @@ public class ModItems {
     public static final RegistryObject<ArkArmorItem> ARK_ARMOR_BOOTS =
             ITEMS.register("ark_armor_boots",
                     () -> new ArkArmorItem(
-                            ArmorMaterials.DIAMOND,
+                            ArmorMaterials.NETHERITE,
                             ArmorItem.Type.BOOTS,
                             new Item.Properties()
                     ));
